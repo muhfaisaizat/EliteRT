@@ -1,0 +1,179 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Dokumentasi API EliteRT",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/penghuni": {
+            "get": {
+                "tags": [
+                    "Penghuni"
+                ],
+                "summary": "Menampilkan semua data penghuni",
+                "operationId": "3f7cb8808290a6859e0ec0966c27e4f7",
+                "responses": {
+                    "200": {
+                        "description": "Data penghuni berhasil diambil"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Penghuni"
+                ],
+                "summary": "Tambah penghuni baru",
+                "operationId": "38adfbb049a63641a1c05ab42c1b269a",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "nama_lengkap",
+                                    "nomor_telepon",
+                                    "status_perkawinan",
+                                    "foto_ktp"
+                                ],
+                                "properties": {
+                                    "nama_lengkap": {
+                                        "type": "string"
+                                    },
+                                    "nomor_telepon": {
+                                        "type": "string"
+                                    },
+                                    "status_perkawinan": {
+                                        "type": "string"
+                                    },
+                                    "foto_ktp": {
+                                        "type": "file",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Berhasil menambahkan data"
+                    },
+                    "400": {
+                        "description": "Gagal"
+                    }
+                }
+            }
+        },
+        "/api/penghuni/{id}": {
+            "get": {
+                "tags": [
+                    "Penghuni"
+                ],
+                "summary": "Tampilkan detail penghuni",
+                "operationId": "dc53f633a72c154618efaf5f541211e9",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Berhasil"
+                    },
+                    "404": {
+                        "description": "Data tidak ditemukan"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Penghuni"
+                ],
+                "summary": "Soft delete data penghuni",
+                "operationId": "3496ac06b63df4d81c562a81a911af0a",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Berhasil dihapus"
+                    },
+                    "404": {
+                        "description": "Data tidak ditemukan"
+                    }
+                }
+            }
+        },
+        "/api/penghuni/update/{id}": {
+            "post": {
+                "tags": [
+                    "Penghuni"
+                ],
+                "summary": "Update data penghuni",
+                "operationId": "7579208a439771c05ac4c34ed9c351bb",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "nama_lengkap": {
+                                        "type": "string"
+                                    },
+                                    "nomor_telepon": {
+                                        "type": "string"
+                                    },
+                                    "status_perkawinan": {
+                                        "type": "string"
+                                    },
+                                    "foto_ktp": {
+                                        "type": "file",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Berhasil diupdate"
+                    },
+                    "404": {
+                        "description": "Data tidak ditemukan"
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Penghuni",
+            "description": "Penghuni"
+        }
+    ]
+}
