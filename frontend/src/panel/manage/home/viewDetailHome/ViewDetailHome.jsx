@@ -18,7 +18,7 @@ const ViewDetailHome = () => {
     return (
         <div className=' w-full grid gap-8 py-3'>
             <div className='w-full px-4 flex gap-4 items-center' >
-                <FaArrowLeftLong size={18} onClick={() => navigate("/perumahan")} className='hover:cursor-pointer' />
+                <FaArrowLeftLong size={18} onClick={() => navigate("/panel/perumahan")} className='hover:cursor-pointer' />
                 <h1 className='text-2xl font-bold'>Detail Rumah</h1>
             </div>
             <div className='w-full bg-white rounded-xl  '>

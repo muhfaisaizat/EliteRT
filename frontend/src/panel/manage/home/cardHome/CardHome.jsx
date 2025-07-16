@@ -88,7 +88,7 @@ const TabelHome = () => {
 
                         return (
                             <div className="p-4 lg:w-1/3" key={rumah.id}>
-                                <div className="h-full bg-white bg-opacity-75 px-4 rounded-lg overflow-hidden relative flex shadow-lg hover:cursor-pointer" onClick={() => navigate("/perumahan/detail")}>
+                                <div className="h-full bg-white bg-opacity-75 px-4 rounded-lg overflow-hidden relative flex shadow-lg hover:cursor-pointer" onClick={() => navigate("/panel/perumahan/detail")}>
                                     <div className="w-1/3 p-4 flex ">
                                         <div>
                                             <RiCloseFill size={14} className='hover:text-red-500' />

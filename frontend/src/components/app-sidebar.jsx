@@ -40,7 +40,7 @@ export function AppSidebar() {
             <SidebarMenu>
 
               <SidebarMenuItem>
-                <SidebarMenuButton asChild onClick={() => navigate("/")}>
+                <SidebarMenuButton asChild onClick={() => navigate("/panel/")}>
                   <a className="hover:cursor-pointer flex items-center gap-2">
                     <RiDashboardHorizontalFill size={10} />
                     <span className="text-lg">Dashboard</span>
@@ -66,12 +66,12 @@ export function AppSidebar() {
                 <CollapsibleContent>
                   <SidebarMenu className="ml-5 mt-1">
                     <SidebarMenuItem>
-                      <SidebarMenuButton asChild onClick={() => navigate("/pembayaran")} className="hover:cursor-pointer">
+                      <SidebarMenuButton asChild onClick={() => navigate("/panel/pembayaran")} className="hover:cursor-pointer">
                         <a className="text-base">Pembayaran Iuran</a>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
                     <SidebarMenuItem>
-                      <SidebarMenuButton asChild onClick={() => navigate("/pengeluaran")} className="hover:cursor-pointer">
+                      <SidebarMenuButton asChild onClick={() => navigate("/panel/pengeluaran")} className="hover:cursor-pointer">
                         <a className="text-base">Pengeluaran</a>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
@@ -81,7 +81,7 @@ export function AppSidebar() {
 
 
               <SidebarMenuItem>
-                <SidebarMenuButton asChild onClick={() => navigate("/penghuni")}>
+                <SidebarMenuButton asChild onClick={() => navigate("/panel/penghuni")}>
                   <a className="hover:cursor-pointer flex items-center gap-2">
                     <FaPeopleGroup size={10} />
                     <span className="text-lg">Penghuni</span>
@@ -91,7 +91,7 @@ export function AppSidebar() {
 
 
               <SidebarMenuItem>
-                <SidebarMenuButton asChild onClick={() => navigate("/perumahan")}>
+                <SidebarMenuButton asChild onClick={() => navigate("/panel/perumahan")}>
                   <a className="hover:cursor-pointer flex items-center gap-2">
                     <MdMapsHomeWork size={10} />
                     <span className="text-lg">Perumahan</span>
