@@ -5,6 +5,485 @@
         "version": "1.0.0"
     },
     "paths": {
+        "/api/detail-penghuni": {
+            "get": {
+                "tags": [
+                    "Detail Penghuni Rumah"
+                ],
+                "summary": "Menampilkan semua data detail penghuni rumah",
+                "operationId": "2c325e0f9f5d8eebea39ab657be1a986",
+                "responses": {
+                    "200": {
+                        "description": "Berhasil mengambil data"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Detail Penghuni Rumah"
+                ],
+                "summary": "Menambahkan data detail penghuni rumah",
+                "operationId": "abd904308d7d63ea64c6d5278eebceb8",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "id_rumah",
+                                    "id_penghuni"
+                                ],
+                                "properties": {
+                                    "id_rumah": {
+                                        "type": "integer"
+                                    },
+                                    "id_penghuni": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Berhasil ditambahkan"
+                    },
+                    "422": {
+                        "description": "Validasi gagal"
+                    }
+                }
+            }
+        },
+        "/api/detail-penghuni/{id}": {
+            "delete": {
+                "tags": [
+                    "Detail Penghuni Rumah"
+                ],
+                "summary": "Menghapus data detail penghuni rumah",
+                "operationId": "4e1aac354149bdbecc42bfdb32d6cb6c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Berhasil dihapus"
+                    },
+                    "404": {
+                        "description": "Data tidak ditemukan"
+                    }
+                }
+            }
+        },
+        "/api/pembayaran-iuran": {
+            "get": {
+                "tags": [
+                    "Pembayaran Iuran"
+                ],
+                "summary": "Menampilkan semua data pembayaran iuran",
+                "operationId": "b9e931e182fefedaeb8f31ea7d4a9289",
+                "responses": {
+                    "200": {
+                        "description": "Berhasil mengambil data"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Pembayaran Iuran"
+                ],
+                "summary": "Menambahkan data pembayaran iuran",
+                "operationId": "5132e6f807100c8c186db14b8e7d2d60",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "id_rumah",
+                                    "id_penghuni",
+                                    "bulan",
+                                    "tahun",
+                                    "tagihan",
+                                    "status_pembayaran"
+                                ],
+                                "properties": {
+                                    "id_rumah": {
+                                        "type": "integer"
+                                    },
+                                    "id_penghuni": {
+                                        "type": "integer"
+                                    },
+                                    "bulan": {
+                                        "type": "string",
+                                        "example": "Juli"
+                                    },
+                                    "tahun": {
+                                        "type": "integer",
+                                        "example": 2025
+                                    },
+                                    "tagihan": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 50000
+                                    },
+                                    "status_pembayaran": {
+                                        "type": "string",
+                                        "enum": [
+                                            "belum bayar",
+                                            "lunas"
+                                        ]
+                                    },
+                                    "metode_pembayaran": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "keterangan": {
+                                        "type": "string",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Data berhasil ditambahkan"
+                    },
+                    "422": {
+                        "description": "Validasi gagal"
+                    }
+                }
+            }
+        },
+        "/api/pembayaran-iuran/rumah": {
+            "get": {
+                "tags": [
+                    "Pembayaran Iuran"
+                ],
+                "summary": "Menampilkan daftar rumah (ID dan nama)",
+                "operationId": "8ec1e054d274ccc76e638893e8b728a2",
+                "responses": {
+                    "200": {
+                        "description": "Berhasil mengambil data rumah"
+                    }
+                }
+            }
+        },
+        "/api/pembayaran-iuran/rumah/{id}": {
+            "get": {
+                "tags": [
+                    "Pembayaran Iuran"
+                ],
+                "summary": "Menampilkan penghuni aktif berdasarkan ID rumah",
+                "operationId": "9c0a410f8ee4285e460658cfa0946d67",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID rumah",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Berhasil mengambil data penghuni"
+                    },
+                    "404": {
+                        "description": "Data tidak ditemukan"
+                    }
+                }
+            }
+        },
+        "/api/pembayaran-iuran/{id}": {
+            "put": {
+                "tags": [
+                    "Pembayaran Iuran"
+                ],
+                "summary": "Mengupdate data pembayaran iuran",
+                "operationId": "a34f0c624b17269a4eedf29c0a93d64e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID pembayaran iuran",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "id_rumah",
+                                    "id_penghuni",
+                                    "bulan",
+                                    "tahun",
+                                    "tagihan",
+                                    "status_pembayaran"
+                                ],
+                                "properties": {
+                                    "id_rumah": {
+                                        "type": "integer"
+                                    },
+                                    "id_penghuni": {
+                                        "type": "integer"
+                                    },
+                                    "bulan": {
+                                        "type": "string",
+                                        "example": "Juli"
+                                    },
+                                    "tahun": {
+                                        "type": "integer",
+                                        "example": 2025
+                                    },
+                                    "tagihan": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 75000
+                                    },
+                                    "status_pembayaran": {
+                                        "type": "string",
+                                        "enum": [
+                                            "belum bayar",
+                                            "lunas"
+                                        ]
+                                    },
+                                    "metode_pembayaran": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "keterangan": {
+                                        "type": "string",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Data berhasil diupdate"
+                    },
+                    "404": {
+                        "description": "Data tidak ditemukan"
+                    },
+                    "422": {
+                        "description": "Validasi gagal"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Pembayaran Iuran"
+                ],
+                "summary": "Menghapus (soft delete) data pembayaran iuran",
+                "operationId": "03af7052e23b282ab051648b9fab104a",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Data berhasil dihapus"
+                    },
+                    "404": {
+                        "description": "Data tidak ditemukan"
+                    }
+                }
+            }
+        },
+        "/api/pengeluaran": {
+            "get": {
+                "tags": [
+                    "Pengeluaran"
+                ],
+                "summary": "Menampilkan semua data pengeluaran",
+                "operationId": "17438ca5e742e916663eb39dd2d2e8a1",
+                "responses": {
+                    "200": {
+                        "description": "Berhasil mengambil data pengeluaran"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Pengeluaran"
+                ],
+                "summary": "Menambahkan data pengeluaran baru",
+                "operationId": "77987b3680f32a7ed4cea1943fbba449",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nama_pengeluaran",
+                                    "kategori",
+                                    "jumlah_pengeluaran"
+                                ],
+                                "properties": {
+                                    "nama_pengeluaran": {
+                                        "type": "string"
+                                    },
+                                    "kategori": {
+                                        "type": "string"
+                                    },
+                                    "jumlah_pengeluaran": {
+                                        "type": "number"
+                                    },
+                                    "keterangan": {
+                                        "type": "string",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Pengeluaran berhasil ditambahkan"
+                    },
+                    "422": {
+                        "description": "Validasi gagal"
+                    }
+                }
+            }
+        },
+        "/api/pengeluaran/{id}": {
+            "get": {
+                "tags": [
+                    "Pengeluaran"
+                ],
+                "summary": "Menampilkan data pengeluaran berdasarkan ID",
+                "operationId": "af0e37dd7c22dc374d90f99e95af7da6",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detail pengeluaran berhasil diambil"
+                    },
+                    "404": {
+                        "description": "Pengeluaran tidak ditemukan"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Pengeluaran"
+                ],
+                "summary": "Mengupdate data pengeluaran",
+                "operationId": "6148fb32c49f8cf8cb78eec37def638f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nama_pengeluaran",
+                                    "kategori",
+                                    "jumlah_pengeluaran"
+                                ],
+                                "properties": {
+                                    "nama_pengeluaran": {
+                                        "type": "string"
+                                    },
+                                    "kategori": {
+                                        "type": "string"
+                                    },
+                                    "jumlah_pengeluaran": {
+                                        "type": "number"
+                                    },
+                                    "keterangan": {
+                                        "type": "string",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Pengeluaran berhasil diperbarui"
+                    },
+                    "404": {
+                        "description": "Pengeluaran tidak ditemukan"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Pengeluaran"
+                ],
+                "summary": "Soft delete data pengeluaran",
+                "operationId": "2d6ca27f2dea0257d0376b06d8189b2f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Pengeluaran berhasil dihapus"
+                    },
+                    "404": {
+                        "description": "Pengeluaran tidak ditemukan"
+                    }
+                }
+            }
+        },
         "/api/penghuni": {
             "get": {
                 "tags": [
@@ -168,9 +647,285 @@
                     }
                 }
             }
+        },
+        "/api/riwayat-penghuni/{id}": {
+            "put": {
+                "tags": [
+                    "Riwayat Penghuni Rumah"
+                ],
+                "summary": "Update data riwayat penghuni rumah",
+                "operationId": "f94594cc2502d0ea5f13662c179dee91",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID riwayat penghuni",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "tanggal_keluar"
+                                ],
+                                "properties": {
+                                    "tanggal_keluar": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2025-07-15"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Berhasil mengupdate data"
+                    },
+                    "404": {
+                        "description": "Data tidak ditemukan"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Riwayat Penghuni Rumah"
+                ],
+                "summary": "Menghapus (soft delete) data riwayat penghuni rumah",
+                "operationId": "be39c95a42db2fbd48c2cd1f9026dcb3",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Berhasil dihapus"
+                    },
+                    "404": {
+                        "description": "Data tidak ditemukan"
+                    }
+                }
+            }
+        },
+        "/api/rumah": {
+            "get": {
+                "tags": [
+                    "Rumah"
+                ],
+                "summary": "Menampilkan semua data rumah",
+                "operationId": "ba129de8b8f3bfed0ff4ce5b3a170e79",
+                "responses": {
+                    "200": {
+                        "description": "Berhasil mengambil data rumah"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Rumah"
+                ],
+                "summary": "Menambahkan rumah baru",
+                "operationId": "6adf8ec6d8a98f552f2939b30e250f60",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nama_rumah",
+                                    "no_rumah",
+                                    "alamat_rumah",
+                                    "status_rumah"
+                                ],
+                                "properties": {
+                                    "nama_rumah": {
+                                        "type": "string"
+                                    },
+                                    "no_rumah": {
+                                        "type": "string"
+                                    },
+                                    "alamat_rumah": {
+                                        "type": "string"
+                                    },
+                                    "status_rumah": {
+                                        "type": "string",
+                                        "enum": [
+                                            "Tetap",
+                                            "Kontrak",
+                                            "Tidak dihuni"
+                                        ]
+                                    },
+                                    "kondisi_rumah": {
+                                        "type": "string",
+                                        "enum": [
+                                            "Dihuni",
+                                            "Tidak Dihuni"
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Rumah berhasil ditambahkan"
+                    },
+                    "422": {
+                        "description": "Validasi gagal"
+                    }
+                }
+            }
+        },
+        "/api/rumah/{id}": {
+            "get": {
+                "tags": [
+                    "Rumah"
+                ],
+                "summary": "Menampilkan detail rumah berdasarkan ID",
+                "operationId": "859ad098a1ca3f9fbc9afa9f84546397",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Berhasil mengambil detail rumah"
+                    },
+                    "404": {
+                        "description": "Rumah tidak ditemukan"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Rumah"
+                ],
+                "summary": "Memperbarui data rumah",
+                "operationId": "f47610ecaa510a425deef73a72982924",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nama_rumah",
+                                    "no_rumah",
+                                    "alamat_rumah",
+                                    "status_rumah"
+                                ],
+                                "properties": {
+                                    "nama_rumah": {
+                                        "type": "string"
+                                    },
+                                    "no_rumah": {
+                                        "type": "string"
+                                    },
+                                    "alamat_rumah": {
+                                        "type": "string"
+                                    },
+                                    "status_rumah": {
+                                        "type": "string",
+                                        "enum": [
+                                            "Tetap",
+                                            "Kontrak",
+                                            "Tidak dihuni"
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Rumah berhasil diperbarui"
+                    },
+                    "404": {
+                        "description": "Rumah tidak ditemukan"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Rumah"
+                ],
+                "summary": "Menghapus data rumah",
+                "operationId": "2322ebc25b0cdd54ee80b313ff3881ca",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Rumah berhasil dihapus"
+                    },
+                    "404": {
+                        "description": "Rumah tidak ditemukan"
+                    }
+                }
+            }
         }
     },
     "tags": [
+        {
+            "name": "Detail Penghuni Rumah",
+            "description": "detail penghuni rumah"
+        },
+        {
+            "name": "Pembayaran Iuran",
+            "description": "pembayaran iuran"
+        },
+        {
+            "name": "Pengeluaran",
+            "description": "Manajemen data pengeluaran"
+        },
+        {
+            "name": "Riwayat Penghuni Rumah",
+            "description": "riwayat penghuni rumah"
+        },
+        {
+            "name": "Rumah",
+            "description": " rumah"
+        },
         {
             "name": "Penghuni",
             "description": "Penghuni"
