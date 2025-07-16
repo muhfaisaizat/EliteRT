@@ -10,6 +10,13 @@ use Illuminate\Routing\Controller as BaseController;
  *     title="Dokumentasi API EliteRT",
  *     version="1.0.0"
  * )
+ * 
+ * @OA\SecurityScheme(
+ *     securityScheme="bearerAuth",
+ *     type="http",
+ *     scheme="bearer",
+ *     bearerFormat="JWT"
+ * )
  */
 class Controller extends BaseController
 {

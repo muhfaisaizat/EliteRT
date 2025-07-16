@@ -108,8 +108,8 @@ return [
              * @link https://zircote.github.io/swagger-php/reference/processors.html
              */
             'default_processors_configuration' => [
-            /** Example */
-            /**
+                /** Example */
+                /**
              * 'operationId.hash' => true,
              * 'pathFilter' => [
              * 'tags' => [
@@ -169,6 +169,12 @@ return [
          * API security definitions. Will be generated into documentation file.
         */
         'securityDefinitions' => [
+            'bearerAuth' => [ // atau nama lain seperti "jwt"
+                'type' => 'apiKey',
+                'description' => 'Masukkan token JWT. Contoh: Bearer {token}',
+                'name' => 'Authorization',
+                'in' => 'header',
+            ],
             'securitySchemes' => [
                 /*
                  * Examples of Security schemes
@@ -214,9 +220,9 @@ return [
                     'name' => 'Authorization', // The name of the header or query parameter to be used.
                     'in' => 'header', // The location of the API key. Valid values are "query" or "header".
                 ],
-                */
-            ],
+                */],
             'security' => [
+                ['bearerAuth' => []],
                 /*
                  * Examples of Securities
                  */
@@ -228,8 +234,7 @@ return [
                     ],
 
                     'passport' => []
-                    */
-                ],
+                    */],
             ],
         ],
 

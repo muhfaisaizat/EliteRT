@@ -5,6 +5,127 @@
         "version": "1.0.0"
     },
     "paths": {
+        "/api/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Login User",
+                "description": "Login user menggunakan email dan password",
+                "operationId": "44212a9096e4b09358281e9ec8a0701d",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "admin@gmail.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "Admin123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login berhasil"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                }
+            }
+        },
+        "/api/forgot-password": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Cek email untuk reset password",
+                "description": "Cek apakah email terdaftar. Jika ya, kirim pesan verifikasi.",
+                "operationId": "eb07f7b71b6206fbb5f272d3e0023af5",
+                "parameters": [
+                    {
+                        "name": "email",
+                        "in": "query",
+                        "description": "Email user",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "email"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Email terverifikasi"
+                    },
+                    "404": {
+                        "description": "Email tidak ditemukan"
+                    }
+                }
+            }
+        },
+        "/api/reset-password": {
+            "put": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Reset password tanpa token",
+                "description": "Reset password hanya dengan email dan konfirmasi password (tanpa perlu token)",
+                "operationId": "0233d5e17b5c3181bc0d08f92451cd41",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password",
+                                    "password_confirmation"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "admin@gmail.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "PasswordBaru123"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "example": "PasswordBaru123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Password berhasil direset"
+                    },
+                    "404": {
+                        "description": "Email tidak ditemukan"
+                    }
+                }
+            }
+        },
         "/api/detail-penghuni": {
             "get": {
                 "tags": [
@@ -15,6 +136,9 @@
                 "responses": {
                     "200": {
                         "description": "Berhasil mengambil data"
+                    },
+                    "500": {
+                        "description": "Unauthorized"
                     }
                 }
             },
@@ -905,7 +1029,20 @@
             }
         }
     },
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
     "tags": [
+        {
+            "name": "Auth",
+            "description": "Authentication Endpoints"
+        },
         {
             "name": "Detail Penghuni Rumah",
             "description": "detail penghuni rumah"
@@ -929,6 +1066,11 @@
         {
             "name": "Penghuni",
             "description": "Penghuni"
+        }
+    ],
+    "security": [
+        {
+            "bearerAuth": []
         }
     ]
 }
