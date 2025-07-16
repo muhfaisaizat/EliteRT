@@ -12,6 +12,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarFooter,
 } from "@/components/ui/sidebar"
 import {
   Collapsible,
@@ -23,11 +24,16 @@ import { RiDashboardHorizontalFill } from "react-icons/ri";
 import { IoIosBriefcase } from "react-icons/io";
 import { FaPeopleGroup } from "react-icons/fa6";
 import { MdMapsHomeWork } from "react-icons/md";
+import { Button } from './ui/button';
+
 
 export function AppSidebar() {
   const navigate = useNavigate()
   const [open, setOpen] = useState(true)
-
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/");
+  };
 
   return (
     <Sidebar>
@@ -102,6 +108,9 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      <SidebarFooter className="p-8">
+        <Button onClick={handleLogout}>LogOut</Button>
+      </SidebarFooter>
     </Sidebar>
   )
 }

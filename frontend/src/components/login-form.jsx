@@ -28,14 +28,11 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(`${API_URL}/auth/login`, { email, password });
+      const response = await axios.post(`${API_URL}/api/login`, { email, password });
       if (response.status === 200) {
-        const userRole = response.data.user.role;
+        console.log(response.data)
         localStorage.setItem("token", response.data.access_token);
-        localStorage.setItem("role", userRole);
-        localStorage.setItem("email", response.data.user.email);
-        localStorage.setItem("idUser", JSON.stringify(response.data.user.id));
-        navigate(userRole === "admin" ? "/panel" : "/");
+        navigate("/panel");
       }
     } catch (err) {
       setError("Login gagal! Periksa kembali email dan password.");
@@ -44,7 +41,7 @@ const Login = () => {
 
   const checkEmail = async () => {
     try {
-      const response = await axios.get(`${API_URL}/auth/check-email?email=${email}`);
+      const response = await axios.get(`${API_URL}/api/forgot-password?email=${email}`);
       setError("")
       setEmailExists(response.data.message);
     } catch (err) {
@@ -67,9 +64,10 @@ const Login = () => {
       return;
     }
     try {
-      await axios.put(`${API_URL}/auth/forgot-password`, {
+      await axios.put(`${API_URL}/api/reset-password`, {
         email,
-        new_password: newPassword
+        password: newPassword,
+        password_confirmation: newPassword,
       });
       setShowForgotPassword(false);
       setEmailExists(false);
