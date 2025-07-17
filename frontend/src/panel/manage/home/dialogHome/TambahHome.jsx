@@ -26,7 +26,7 @@ import axios from 'axios';
 import { API_URL } from "../../../../helpers/networt";
 
 
-const TambahHome = ({fetchData}) => {
+const TambahHome = ({ fetchData }) => {
   const { toast } = useToast();
 
 
@@ -44,10 +44,14 @@ const TambahHome = ({fetchData}) => {
 
 
   const handleChange = (e) => {
-    const { id, value, files } = e.target;
+    const { id, value } = e.target;
+
+
+    if (id === "no_rumah" && !/^\d*$/.test(value)) return;
+
     setFormData((prev) => ({
       ...prev,
-      [id]: files ? files[0] : value,
+      [id]: value,
     }));
   };
 
@@ -154,7 +158,7 @@ const TambahHome = ({fetchData}) => {
               <Button variant="outline" type="button">Kembali</Button>
             </DialogClose>
             <DialogClose asChild>
-            <Button type="submit">Simpan</Button>
+              <Button type="submit">Simpan</Button>
             </DialogClose>
           </DialogFooter>
         </form>
