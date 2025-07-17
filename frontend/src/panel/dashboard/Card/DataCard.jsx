@@ -6,24 +6,16 @@ import { FaBox } from "react-icons/fa";
 import { FaArrowRightLong } from "react-icons/fa6";
 import { useNavigate } from 'react-router-dom';
 
-const DataCard = ({ dataSum }) => {
+const DataCard = ({ dataCard }) => {
     const navigate = useNavigate();
-    const dummyData = {
-        Total_Penjualan: 12000000,
-        Rata_Rata_Total_Penjualan_Per_Hari: 400000,
-        Produk_Terjual: 120,
-        Rata_Rata_Produk_Terjual_Per_Hari: 10,
-        Pembayaran_Paling_Sering: "Transfer",
-        Transaksi_Pembayaran_Paling_Sering: 65,
-        Produk_Terlaris: 20,
-        Transaksi_Produk_Terlaris: 45,
-    };
+   
 
-    const data = dataSum || dummyData;
+    const data = dataCard;
 
     return (
         <div className="container mx-auto">
             <div className="flex flex-wrap -m-4">
+                {/* Kartu Saldo */}
                 <div className="lg:w-1/4 md:w-1/2 p-4 w-full">
                     <div className='border-2 bg-white rounded-[8px] grid gap-[8px] p-[24px] h-full'>
                         <div className='flex justify-between'>
@@ -32,34 +24,28 @@ const DataCard = ({ dataSum }) => {
                         </div>
                         <div className='grid gap-[4px]'>
                             <p className='text-[24px] font-semibold'>
-                                {data.Total_Penjualan > 0 ? `Rp ${Number(data.Total_Penjualan).toLocaleString('id-ID')}` : '0'}
+                                Rp {Number(data.total_saldo).toLocaleString('id-ID')}
                             </p>
-                            {data.Rata_Rata_Total_Penjualan_Per_Hari !== null && (
-                                <p className={`text-[12px] font-medium ${data.Rata_Rata_Total_Penjualan_Per_Hari > 0 ? 'text-emerald-500' : 'text-rose-500'}`}>
-                                    Rp {Number(data.Rata_Rata_Total_Penjualan_Per_Hari).toLocaleString('id-ID')} Rata-Rata Perhari
-                                </p>
-                            )}
                         </div>
                     </div>
                 </div>
 
+                {/* Kartu Pengeluaran */}
                 <div className="lg:w-1/4 md:w-1/2 p-4 w-full">
                     <div className='border-2 bg-white rounded-[8px] grid gap-[8px] p-[24px] h-full'>
                         <div className='flex justify-between'>
-                            <h1 className='text-[14px] font-semibold'>Pengeluaran</h1>
+                            <h1 className='text-[14px] font-semibold'>Total Pengeluaran</h1>
                             <FaBagShopping size="16" color="#717179" />
                         </div>
                         <div className='grid gap-[4px]'>
-                            <p className='text-[24px] font-semibold'>{data.Produk_Terjual || 0}</p>
-                            {data.Rata_Rata_Produk_Terjual_Per_Hari !== null && (
-                                <p className={`text-[12px] font-medium ${data.Rata_Rata_Produk_Terjual_Per_Hari > 0 ? 'text-emerald-500' : 'text-rose-500'}`}>
-                                    {data.Rata_Rata_Produk_Terjual_Per_Hari} Rata-Rata Perhari
-                                </p>
-                            )}
+                            <p className='text-[24px] font-semibold'>
+                                Rp {Number(data.total_pengeluaran).toLocaleString('id-ID')}
+                            </p>
                         </div>
                     </div>
                 </div>
 
+                {/* Kartu Metode Pembayaran Terbanyak */}
                 <div className="lg:w-1/4 md:w-1/2 p-4 w-full">
                     <div className='border-2 bg-white rounded-[8px] grid gap-[8px] p-[24px] h-full'>
                         <div className='flex justify-between'>
@@ -67,16 +53,15 @@ const DataCard = ({ dataSum }) => {
                             <FaBox size="16" color="#717179" />
                         </div>
                         <div className='grid gap-[4px]'>
-                            <p className='text-[24px] font-semibold'>{data.Pembayaran_Paling_Sering || '-'}</p>
-                            {data.Transaksi_Pembayaran_Paling_Sering !== null && (
-                                <p className='text-[12px] font-medium text-emerald-500'>
-                                    {data.Transaksi_Pembayaran_Paling_Sering} transaksi
-                                </p>
-                            )}
+                            <p className='text-[24px] font-semibold'>{data.metode_pembayaran || '-'}</p>
+                            <p className='text-[12px] font-medium text-emerald-500'>
+                                {data.jumlah_metode} transaksi
+                            </p>
                         </div>
                     </div>
                 </div>
 
+                {/* Kartu Iuran Belum Lunas */}
                 <div className="lg:w-1/4 md:w-1/2 p-4 w-full">
                     <div className='border-2 bg-white rounded-[8px] grid gap-[8px] p-[24px] h-full'>
                         <div className='flex justify-between'>
@@ -84,14 +69,15 @@ const DataCard = ({ dataSum }) => {
                             <FaBox size="16" color="#717179" />
                         </div>
                         <div className='grid gap-[4px]'>
-                            <p className='text-[24px] font-semibold'>{data.Produk_Terlaris || '-'}</p>
+                            <p className='text-[24px] font-semibold'>
+                                {data.jumlah_belum_bayar ?? 0}
+                            </p>
                             <div className='flex items-center gap-4 hover:cursor-pointer' onClick={() => navigate("/pembayaran")}>
-                                <p className='text-[12px] font-medium '>
+                                <p className='text-[12px] font-medium'>
                                     Cek Sekarang
                                 </p>
                                 <FaArrowRightLong size={18} />
                             </div>
-
                         </div>
                     </div>
                 </div>

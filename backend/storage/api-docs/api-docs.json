@@ -126,6 +126,99 @@
                 }
             }
         },
+        "/api/dashboard/card": {
+            "get": {
+                "tags": [
+                    "Dashboard"
+                ],
+                "summary": "Ambil data dashboard (saldo, pengeluaran, metode pembayaran terbanyak, jumlah belum bayar)",
+                "operationId": "dbc06aa07660f7f35c548c4650ef5c9e",
+                "parameters": [
+                    {
+                        "name": "periode",
+                        "in": "query",
+                        "description": "Periode data: bulan, tahun, semua",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "bulan",
+                                "tahun",
+                                "semua"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Berhasil mendapatkan data dashboard",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "total_saldo": {
+                                            "type": "number"
+                                        },
+                                        "total_pengeluaran": {
+                                            "type": "number"
+                                        },
+                                        "metode_pembayaran": {
+                                            "type": "string"
+                                        },
+                                        "jumlah_metode": {
+                                            "type": "integer"
+                                        },
+                                        "jumlah_belum_bayar": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/dashboard/chart": {
+            "get": {
+                "tags": [
+                    "Dashboard"
+                ],
+                "summary": "Get daily pemasukan and pengeluaran for chart",
+                "operationId": "32ab5b03cea33d51812deee4d6222653",
+                "responses": {
+                    "200": {
+                        "description": "Chart data returned successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "tanggal": {
+                                                "type": "string",
+                                                "format": "date",
+                                                "example": "2024-04-01"
+                                            },
+                                            "pemasukan": {
+                                                "type": "number",
+                                                "example": 200000
+                                            },
+                                            "pengeluaran": {
+                                                "type": "number",
+                                                "example": 150000
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/detail-penghuni": {
             "get": {
                 "tags": [
@@ -1047,6 +1140,10 @@
         {
             "name": "Auth",
             "description": "Authentication Endpoints"
+        },
+        {
+            "name": "Dashboard",
+            "description": "Dashboard"
         },
         {
             "name": "Detail Penghuni Rumah",

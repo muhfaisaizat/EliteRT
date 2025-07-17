@@ -21,6 +21,7 @@ use App\Http\Controllers\Api\RiwayatPenghuniRumahController;
 use App\Http\Controllers\Api\PembayaranIuranController;
 use App\Http\Controllers\Api\PengeluaranController;
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\DashboardController;
 
 
 Route::post('/login', [AuthController::class, 'login']);
@@ -75,4 +76,7 @@ Route::middleware('auth:api')->group(function () {
         Route::put('/{id}', [PengeluaranController::class, 'update']);
         Route::delete('/{id}', [PengeluaranController::class, 'destroy']);
     });
+
+    Route::get('/dashboard/card', [DashboardController::class, 'card']);
+    Route::get('/dashboard/chart', [DashboardController::class, 'chart']);
 });
