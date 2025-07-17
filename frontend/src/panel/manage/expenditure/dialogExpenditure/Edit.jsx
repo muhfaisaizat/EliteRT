@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
@@ -24,68 +24,112 @@ import {
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { Checkbox } from "@/components/ui/checkbox"
+import axios from 'axios';
+import { API_URL } from "../../../../helpers/networt";
 
-const EditPenghuni = ({ open, setOpen, data }) => {
-  const { toast } = useToast();
+
+const EditPenghuni = ({ open, setOpen, data, fetchData}) => {
+    const { toast } = useToast();
     const [lainnyaChecked, setLainnyaChecked] = useState(false);
-
+    const kategoriOptions = ["Gaji Satpam", "Alat Kebersihan"];
+    const [id, setID] = useState("")
 
     const [formData, setFormData] = useState({
         nama: "",
-        status: "",
-        telepon: "",
-        perkawinan: "",
-        foto: null,
+        kategori: "",
+        jumlah_pengeluaran: "",
+        keterangan: "",
     });
+
+    const formatRupiah = (value) => {
+
+        const numberString = value.replace(/[^\d]/g, "");
+
+        return numberString.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    };
+
+    useEffect(() => {
+        if (data) {
+            const kategoriLainnya = !kategoriOptions.includes(data.kategori || "");
+            setFormData({
+                nama: data.nama_pengeluaran || "",
+                kategori: data.kategori || "",
+                jumlah_pengeluaran: data.jumlah_pengeluaran?.toString() || "",
+                keterangan: data.keterangan || "",
+            });
+            setLainnyaChecked(kategoriLainnya);
+            setID(data.id);
+        }
+    }, [data]);
 
     const handleChange = (e) => {
         const { id, value, files } = e.target;
-        setFormData((prev) => ({
-            ...prev,
-            [id]: files ? files[0] : value,
-        }));
+        if (id === "jumlah_pengeluaran") {
+
+            const formatted = formatRupiah(value);
+            setFormData((prev) => ({
+                ...prev,
+                [id]: formatted,
+            }));
+        } else {
+            setFormData((prev) => ({
+                ...prev,
+                [id]: value,
+            }));
+        }
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        const token = localStorage.getItem("token");
 
-        const { nama, status, telepon, perkawinan, foto } = formData;
+        const cleanedJumlah = formData.jumlah_pengeluaran.replace(/\./g, "");
 
-        if (!nama || !status || !telepon || !perkawinan || !foto) {
+        try {
+            await axios.put(
+                `${API_URL}/api/pengeluaran/${id}`,
+                 {
+        nama_pengeluaran: formData.nama,
+        kategori: formData.kategori,
+        jumlah_pengeluaran: parseInt(cleanedJumlah),
+        keterangan: formData.keterangan || "",
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+            toast({
+                title: "Berhasil",
+                description: "Data pengeluaran berhasil disimpan.",
+            });
+
+            setOpen(false);
+            fetchData();
+        } catch (error) {
+            console.error("Error saat mengirim data:", error);
             toast({
                 variant: "destructive",
-                title: "Gagal menyimpan!",
-                description: "Semua field wajib diisi.",
+                title: "Gagal menyimpan",
+                description: "Terjadi kesalahan saat menyimpan data.",
             });
-            return;
         }
-
-
-        toast({
-            title: "Berhasil!",
-            description: "Data penghuni berhasil ditambahkan.",
-        });
-
-
-        setFormData({
-            nama: "",
-            status: "",
-            telepon: "",
-            perkawinan: "",
-            foto: null,
-        });
     };
-  return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <form>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Edit Pengeluaran</DialogTitle>
-            <DialogDescription>
-              Silakan lengkapi atau ubah informasi Pengeluaran di form berikut. Pastikan data yang dimasukkan benar sebelum menekan tombol "Simpan".
-            </DialogDescription>
-          </DialogHeader>
-          <div className="grid gap-4 py-4">
+
+    return (
+        <Dialog open={open} onOpenChange={setOpen}>
+            <form>
+                <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader>
+                        <DialogTitle>Edit Pengeluaran</DialogTitle>
+                        <DialogDescription>
+                            Silakan lengkapi atau ubah informasi Pengeluaran di form berikut. Pastikan data yang dimasukkan benar sebelum menekan tombol "Simpan".
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="grid gap-4 py-4">
                         <div className="grid gap-2">
                             <Label htmlFor="nama">Nama Pengeluaran <span className="text-red-500">*</span></Label>
                             <Input id="nama" value={formData.nama} onChange={handleChange} />
@@ -94,16 +138,20 @@ const EditPenghuni = ({ open, setOpen, data }) => {
                         <div className="grid gap-2">
                             <Label htmlFor="telepon">Kategori <span className="text-red-500">*</span></Label>
                             {lainnyaChecked ? (
-                                <Input id="jenisIuran" value={formData.jenisIuran} onChange={handleChange} />
+                                <Input id="kategori" value={formData.kategori} onChange={handleChange} />
                             ) : (
-                                <Select >
+                                <Select
+                                    value={formData.kategori}
+                                    onValueChange={(val) => setFormData((prev) => ({ ...prev, kategori: val }))}
+                                >
                                     <SelectTrigger className="w-full">
-                                        <SelectValue placeholder="Pilih " />
+                                        <SelectValue placeholder="Pilih" />
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectGroup>
-                                            <SelectItem value="Gaji Satpam">Gaji Satpam</SelectItem>
-                                            <SelectItem value="Alat Kebersihan">Alat Kebersihan</SelectItem>
+                                            {kategoriOptions.map((kategori) => (
+                                                <SelectItem key={kategori} value={kategori}>{kategori}</SelectItem>
+                                            ))}
                                         </SelectGroup>
                                     </SelectContent>
                                 </Select>
@@ -124,23 +172,23 @@ const EditPenghuni = ({ open, setOpen, data }) => {
                         </div>
                         <div className="grid gap-2">
                             <Label htmlFor="perkawinan">Jumlah pengeluaran <span className="text-red-500">*</span></Label>
-                            <Input id="telepon" value={formData.telepon} onChange={handleChange} />
+                            <Input id="jumlah_pengeluaran" value={formData.jumlah_pengeluaran} onChange={handleChange} />
                         </div>
                         <div className="grid gap-2">
                             <Label htmlFor="statusPembayaran">Keterangan</Label>
-                            <Textarea placeholder="Tulis disini...." />
+                            <Textarea id="keterangan" value={formData.keterangan} onChange={handleChange} />
                         </div>
                     </div>
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button variant="outline">Kembali</Button>
-            </DialogClose>
-            <Button type="submit">Simpan</Button>
-          </DialogFooter>
-        </DialogContent>
-      </form>
-    </Dialog>
-  );
+                    <DialogFooter>
+                        <DialogClose asChild>
+                            <Button variant="outline">Kembali</Button>
+                        </DialogClose>
+                        <Button type="submit" onClick={handleSubmit}>Simpan</Button>
+                    </DialogFooter>
+                </DialogContent>
+            </form>
+        </Dialog>
+    );
 };
 
 export default EditPenghuni;

@@ -60,7 +60,7 @@ const ViewDetailHome = () => {
             });
             toast({
                 title: "Berhasil!",
-                description: "Data penghuni berhasil dihapus.",
+                description: "Data  berhasil dihapus.",
             });
              fetchData();
         } catch (error) {

@@ -27,19 +27,19 @@ const ViewPenghuni = ({ open, setOpen, data }) => {
               <div className="grid gap-4">
                 <div className="grid gap-3">
                   <Label htmlFor="name">Nama Pengeluaran</Label>
-                  <Input  id="name" defaultValue={data?.["Nama Lengkap"] || ""}  readOnly/>
+                  <Input  id="name" defaultValue={data?.["nama_pengeluaran"] || ""}  readOnly/>
                 </div>
                 <div className="grid gap-3">
                   <Label htmlFor="status">Kategori</Label>
-                  <Input id="status" defaultValue={data?.["Status Penghuni"] || ""}  readOnly/>
+                  <Input id="status" defaultValue={data?.["kategori"] || ""}  readOnly/>
                 </div>
                 <div className="grid gap-3">
                   <Label htmlFor="phone">Jumlah pengeluaran</Label>
-                  <Input id="phone" defaultValue={data?.["Nomor Telepon"] || ""}  readOnly/>
+                  <Input id="phone"  value={data?.jumlah_pengeluaran?.toString() || ""}  readOnly/>
                 </div>
                 <div className="grid gap-3">
                   <Label htmlFor="marital">Keterangan</Label>
-                  <Textarea placeholder="Tulis disini...." readOnly/>
+                  <Textarea defaultValue={data?.["keterangan"] || "-"} readOnly/>
                 </div>
               </div>
               <DialogFooter>

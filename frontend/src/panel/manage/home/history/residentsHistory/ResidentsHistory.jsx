@@ -64,7 +64,7 @@ const ResidentsHistory = ({ dataRiwayatPenghuni }) => {
        
             toast({
                 title: "Berhasil!",
-                description: "Data penghuni berhasil dihapus.",
+                description: "Data  berhasil dihapus.",
             });
         } catch (error) {
             console.error("Gagal menghapus data:", error);

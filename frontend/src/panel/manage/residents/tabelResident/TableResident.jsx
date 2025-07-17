@@ -59,18 +59,18 @@ const TableResident = ({ tableData, setTableData, fetchData }) => {
                 },
             });
 
-            // Update data tabel
+           
             setTableData((prev) => prev.filter((item) => item.id !== id));
 
-            // Notifikasi sukses
+            
             toast({
                 title: "Berhasil!",
-                description: "Data penghuni berhasil dihapus.",
+                description: "Data  berhasil dihapus.",
             });
         } catch (error) {
             console.error("Gagal menghapus data:", error);
 
-            // Notifikasi gagal
+            
             toast({
                 variant: "destructive",
                 title: "Gagal menghapus!",

@@ -21,49 +21,52 @@ export const columns = (handleDelete, rowSelection, setOpenEdit, setDataToEdit, 
 
 
     return [
-       
+
 
         {
-            accessorKey: "Nama Pengeluaran",
+            accessorKey: "nama_pengeluaran",
             header: "Nama Pengeluaran",
             cell: ({ row }) => (
-                <div className="capitalize">{row.getValue("Nama Pengeluaran")}</div>
+                <div className="capitalize">{row.getValue("nama_pengeluaran")}</div>
             ),
         },
-        
+
         {
-            accessorKey: "Kategori",
+            accessorKey: "kategori",
             header: "Kategori",
             cell: ({ row }) => (
-                <div className="capitalize">{row.getValue("Kategori")}</div>
+                <div className="capitalize">{row.getValue("kategori")}</div>
             ),
         },
         {
-            accessorKey: "Jumlah pengeluaran",
+            accessorKey: "jumlah_pengeluaran",
             header: "Jumlah pengeluaran",
             cell: ({ row }) => (
-                <div className="capitalize">{row.getValue("Jumlah pengeluaran")}</div>
+                <div className="capitalize">{row.getValue("jumlah_pengeluaran")}</div>
             ),
         },
         {
-            accessorKey: "Keterangan",
+            accessorKey: "keterangan",
             header: "Keterangan",
-            cell: ({ row }) => (
-                <div className="capitalize">{row.getValue("Keterangan")}</div>
-            ),
+            cell: ({ row }) => {
+                const value = row.getValue("keterangan");
+                return <div className="capitalize">{value ? (value.length > 100 ? value.slice(0, 100) + "..." : value) : "-"}</div>;
+            },
         },
         {
-            accessorKey: "Tanggal",
+            accessorKey: "created_at",
             header: "Tanggal",
-            cell: ({ row }) => (
-                <div className="capitalize">{row.getValue("Tanggal")}</div>
-            ),
+            cell: ({ row }) => {
+                const fullDate = row.getValue("created_at");
+                const dateOnly = fullDate ? fullDate.substring(0, 10) : "-";
+                return <div className="capitalize">{dateOnly}</div>;
+            },
         },
 
 
         !isAnyRowSelected && {
             id: "actions",
-             header: "Aksi",
+            header: "Aksi",
             cell: ({ row }) => {
                 const rowData = row.original;
                 return (
@@ -78,8 +81,8 @@ export const columns = (handleDelete, rowSelection, setOpenEdit, setDataToEdit, 
                             <DropdownMenuLabel>Aksi</DropdownMenuLabel>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem onClick={() => { setOpenView(true); setDataToView(rowData); }}>Lihat Detail</DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => { setOpenEdit(true); setDataToEdit(rowData); }} >Edit Penghuni</DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => { setOpenEdit(true); setDataToEdit(rowData); }} className="text-red-500" >Hapus</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => { setOpenEdit(true); setDataToEdit(rowData); }} >Edit Pengeluaran</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleDelete(rowData.id)} className="text-red-500" >Hapus</DropdownMenuItem>
 
                         </DropdownMenuContent>
                     </DropdownMenu>
@@ -87,7 +90,7 @@ export const columns = (handleDelete, rowSelection, setOpenEdit, setDataToEdit, 
             },
         },
 
-        
+
     ].filter(Boolean);
 };
 
