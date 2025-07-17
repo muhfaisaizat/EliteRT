@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { HiHomeModern } from 'react-icons/hi2'
 import { Input } from '@/components/ui/input'
@@ -6,61 +6,84 @@ import TambahHome from '../dialogHome/TambahHome'
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button'
 import { RiCloseFill } from "react-icons/ri";
-
-
-const initialData = [
-    {
-        id: '1',
-        namaRumah: 'Rumah Bu Rina',
-        alamat: 'Lemahduwur, Batokan, Kec. Ngantru, Kabupaten Tulungagung, Jawa Timur',
-        statusPenghuni: 'kontrak',
-        jumlahPenghuni: 4,
-        nomorRumah: '01',
-    },
-    {
-        id: '2',
-        namaRumah: 'Rumah Pak Budi',
-        alamat: 'Jl. Kenanga No. 5, Bandung',
-        statusPenghuni: 'tetap',
-        jumlahPenghuni: 6,
-        nomorRumah: '02',
-    },
-    {
-        id: '3',
-        namaRumah: 'Rumah Ibu Siti',
-        alamat: 'Perumahan Mawar, Blok B No. 8',
-        statusPenghuni: 'kontrak',
-        jumlahPenghuni: 3,
-        nomorRumah: '03',
-    },
-    {
-        id: '4',
-        namaRumah: 'Rumah Pak Agus',
-        alamat: 'Jl. Melati, Surabaya',
-        statusPenghuni: 'tetap',
-        jumlahPenghuni: 5,
-        nomorRumah: '04',
-    },
-    {
-        id: '5',
-        namaRumah: 'Rumah Bu Dewi',
-        alamat: 'Jl. Dahlia, Tulungagung',
-        statusPenghuni: 'kontrak',
-        jumlahPenghuni: 2,
-        nomorRumah: '05',
-    },
-]
+import axios from 'axios';
+import { API_URL } from "../../../../helpers/networt";
+import { useToast } from '@/hooks/use-toast';
 
 const TabelHome = () => {
+    const [initialData, setInitialData] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
+    const { toast } = useToast();
     const navigate = useNavigate();
-    const [searchTerm, setSearchTerm] = useState('')
+    const fetchData = async () => {
+            const token = localStorage.getItem("token");
+            try {
+                const response = await axios.get(`${API_URL}/api/rumah`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                // console.log(response.data.data)
+
+                const rumahData = response.data.data.map((item) => ({
+                    id: item.id,
+                    namaRumah: item.nama_rumah,
+                    alamat: item.alamat_rumah,
+                    statusPenghuni: item.status_rumah.toLowerCase(),
+                    jumlahPenghuni: item.penghuni_aktif.length,
+                    nomorRumah: item.no_rumah,
+                }));
+
+                setInitialData(rumahData);
+
+            } catch (error) {
+                toast({
+                    variant: 'destructive',
+                    title: 'Gagal memuat data rumah',
+                    description: error.response?.data?.message || error.message,
+                });
+            }
+        };
+
+    useEffect(() => {
+        
+
+        fetchData();
+    }, []);
+
+
+     const handleDelete = async (id) => {
+        const token = localStorage.getItem("token");
+
+        try {
+            await axios.delete(`${API_URL}/api/rumah/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            toast({
+                title: "Berhasil!",
+                description: "Data penghuni berhasil dihapus.",
+            });
+             fetchData();
+        } catch (error) {
+            console.error("Gagal menghapus data:", error);
+
+            // Notifikasi gagal
+            toast({
+                variant: "destructive",
+                title: "Gagal menghapus!",
+                description: "Terjadi kesalahan saat menghapus data.",
+            });
+        }
+    };
 
     const filteredData = initialData.filter((rumah) =>
         Object.values(rumah)
             .join(' ')
             .toLowerCase()
             .includes(searchTerm.toLowerCase())
-    )
+    );
 
     return (
         <div className="container mx-auto flex flex-col gap-4">
@@ -71,12 +94,12 @@ const TabelHome = () => {
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="max-w-sm"
                 />
-                <TambahHome />
+                <TambahHome fetchData={fetchData}/>
             </div>
 
             <div className="flex flex-wrap -m-4">
                 {filteredData.length === 0 ? (
-                    <p className="text-gray-500 p-4">Tidak ditemukan rumah yang sesuai.</p>
+                    <p className="text-gray-500 w-full flex justify-center items-center p-20">No results.</p>
                 ) : (
                     filteredData.map((rumah) => {
                         const statusClass =
@@ -84,21 +107,23 @@ const TabelHome = () => {
                                 ? 'bg-emerald-500'
                                 : rumah.statusPenghuni === 'kontrak'
                                     ? 'bg-yellow-500'
-                                    : 'bg-gray-400'
+                                    : 'bg-gray-400';
 
                         return (
                             <div className="p-4 lg:w-1/3" key={rumah.id}>
-                                <div className="h-full bg-white bg-opacity-75 px-4 rounded-lg overflow-hidden relative flex shadow-lg hover:cursor-pointer" onClick={() => navigate("/panel/perumahan/detail")}>
-                                    <div className="w-1/3 p-4 flex ">
+                                <div
+                                    className="h-full bg-white bg-opacity-75 px-4 rounded-lg overflow-hidden relative flex shadow-lg hover:cursor-pointer"
+                                    
+                                >
+                                    <div className="w-1/3 p-4 flex">
                                         <div>
-                                            <RiCloseFill size={14} className='hover:text-red-500' />
+                                            <RiCloseFill size={14} className="hover:text-red-500" onClick={() => handleDelete(rumah.id)}/>
                                         </div>
-                                        <div className='flex justify-center items-center'>
+                                        <div className="flex justify-center items-center" onClick={() => { localStorage.setItem("id_rumah", rumah.id); navigate(`/panel/perumahan/detail`);}}>
                                             <HiHomeModern size={60} color="#B9B4C7" />
                                         </div>
-
                                     </div>
-                                    <div className="w-10/12 p-4 flex flex-col gap-4">
+                                    <div className="w-10/12 p-4 flex flex-col gap-4" onClick={() => { localStorage.setItem("id_rumah", rumah.id); navigate(`/panel/perumahan/detail`);}}>
                                         <div className="flex justify-between items-center">
                                             <h1 className="font-semibold">{rumah.namaRumah}</h1>
                                             <Badge variant="secondary">No rumah.{rumah.nomorRumah}</Badge>
@@ -110,18 +135,20 @@ const TabelHome = () => {
                                                     rumah.statusPenghuni.slice(1)}
                                             </Badge>
                                             <Badge variant="secondary">
-                                                Dihuni {rumah.jumlahPenghuni} orang
+                                                {rumah.jumlahPenghuni === 0
+                                                    ? 'Tidak dihuni'
+                                                    : `Dihuni ${rumah.jumlahPenghuni} orang`}
                                             </Badge>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        )
+                        );
                     })
                 )}
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default TabelHome
+export default TabelHome;

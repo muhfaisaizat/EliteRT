@@ -39,7 +39,7 @@ class RumahController extends Controller
                 // Ambil riwayat penghuni
                 $riwayat = DB::table('riwayat_penghuni_rumah as rpr')
                     ->join('penghuni as p', 'rpr.id_penghuni', '=', 'p.id')
-                    ->select('rpr.id','p.nama_lengkap', 'rpr.tanggal_masuk', 'rpr.tanggal_keluar')
+                    ->select('rpr.id', 'p.nama_lengkap', 'rpr.tanggal_masuk', 'rpr.tanggal_keluar')
                     ->where('rpr.id_rumah', $r->id)
                     ->whereNull('rpr.deleted_at')
                     ->get();
@@ -74,14 +74,39 @@ class RumahController extends Controller
      */
     public function show($id)
     {
-        $rumah = DB::table('rumah')->where('id', $id)->whereNull('deleted_at')->first();
+        $rumah = DB::table('rumah')
+            ->where('id', $id)
+            ->whereNull('deleted_at')
+            ->first();
 
         if (!$rumah) {
-            return response()->json(['message' => 'Rumah tidak ditemukan'], 404);
+            return response()->json([
+                'message' => 'Data rumah tidak ditemukan',
+            ], 404);
         }
 
+        // Ambil penghuni aktif
+        $penghuni = DB::table('detail_penghuni_rumah as dpr')
+            ->join('penghuni as p', 'dpr.id_penghuni', '=', 'p.id')
+            ->select('dpr.id as id_detail_penghuni_rumah', 'p.id as id_penghuni', 'p.nama_lengkap', 'p.nomor_telepon', 'p.status_perkawinan', 'p.foto_ktp')
+            ->where('dpr.id_rumah', $id)
+            ->whereNull('dpr.deleted_at')
+            ->get();
+
+        // Ambil riwayat penghuni
+        $riwayat = DB::table('riwayat_penghuni_rumah as rpr')
+            ->join('penghuni as p', 'rpr.id_penghuni', '=', 'p.id')
+            ->select('rpr.id', 'p.nama_lengkap', 'rpr.tanggal_masuk', 'rpr.tanggal_keluar')
+            ->where('rpr.id_rumah', $id)
+            ->whereNull('rpr.deleted_at')
+            ->get();
+
+        // Gabungkan ke objek rumah
+        $rumah->penghuni_aktif = $penghuni;
+        $rumah->riwayat_penghuni = $riwayat;
+
         return response()->json([
-            'message' => 'Detail rumah berhasil diambil',
+            'message' => 'Data rumah berhasil diambil',
             'data' => $rumah
         ]);
     }

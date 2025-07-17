@@ -32,6 +32,7 @@ export function AppSidebar() {
   const [open, setOpen] = useState(true)
   const handleLogout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("id_rumah");
     navigate("/");
   };
 

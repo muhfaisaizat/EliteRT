@@ -22,62 +22,26 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Badge } from "@/components/ui/badge";
-import { RiCloseFill } from "react-icons/ri";
+import axios from 'axios';
+import { API_URL } from "../../../../helpers/networt";
 
 
-const people = [
-  { id: "1", name: "Tidak Dihuni" },
-  { id: "2", name: "Rina Ayu" },
-  { id: "3", name: "Budi Santoso" },
-  { id: "4", name: "Siti Nurhaliza" },
-  { id: "5", name: "Agus Wijaya" },
-  { id: "6", name: "Dewi Lestari" },
-]
-
-const TambahHome = () => {
+const TambahHome = ({fetchData}) => {
   const { toast } = useToast();
-  const [showStatusBar, setShowStatusBar] = useState(true)
-  const [showActivityBar, setShowActivityBar] = useState(false)
-  const [showPanel, setShowPanel] = useState(false)
 
-  const [selectedIds, setSelectedIds] = useState([])
-  const [searchTerm, setSearchTerm] = useState("")
 
-  const handleToggle = (id) => {
-    setSelectedIds((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
-    )
-  }
 
-  const handleRemove = (id) => {
-    setSelectedIds((prev) => prev.filter((item) => item !== id))
-  }
 
-  const filteredPeople = people.filter((person) =>
-    person.name.toLowerCase().includes(searchTerm.toLowerCase())
-  )
-
-  const selectedPeople = people.filter((person) =>
-    selectedIds.includes(person.id)
-  )
 
 
   const [formData, setFormData] = useState({
-    nama: "",
-    status: "",
-    telepon: "",
-    perkawinan: "",
-    foto: null,
+    nama_rumah: "",
+    no_rumah: "",
+    alamat_rumah: "",
+    status_rumah: "",
+    kondisi_rumah: "Tidak Dihuni", // default
   });
+
 
   const handleChange = (e) => {
     const { id, value, files } = e.target;
@@ -87,12 +51,12 @@ const TambahHome = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const { nama, status, telepon, perkawinan, foto } = formData;
+    const { nama_rumah, no_rumah, alamat_rumah, status_rumah, kondisi_rumah } = formData;
 
-    if (!nama || !status || !telepon || !perkawinan || !foto) {
+    if (!nama_rumah || !no_rumah || !alamat_rumah || !status_rumah) {
       toast({
         variant: "destructive",
         title: "Gagal menyimpan!",
@@ -101,21 +65,40 @@ const TambahHome = () => {
       return;
     }
 
+    try {
+      const token = localStorage.getItem("token");
 
-    toast({
-      title: "Berhasil!",
-      description: "Data penghuni berhasil ditambahkan.",
-    });
+      await axios.post(`${API_URL}/api/rumah`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
 
+      toast({
+        title: "Berhasil!",
+        description: "Data rumah berhasil ditambahkan.",
+      });
 
-    setFormData({
-      nama: "",
-      status: "",
-      telepon: "",
-      perkawinan: "",
-      foto: null,
-    });
+      setFormData({
+        nama_rumah: "",
+        no_rumah: "",
+        alamat_rumah: "",
+        status_rumah: "",
+        kondisi_rumah: "Tidak Dihuni",
+      });
+
+      fetchData()
+
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Gagal menyimpan!",
+        description: error.response?.data?.message || "Terjadi kesalahan.",
+      });
+    }
   };
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -133,73 +116,36 @@ const TambahHome = () => {
 
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">
-              <Label htmlFor="nama">Nama Rumah <span className="text-red-500">*</span></Label>
-              <Input id="nama" value={formData.nama} onChange={handleChange} />
+              <Label htmlFor="nama_rumah">Nama Rumah <span className="text-red-500">*</span></Label>
+              <Input id="nama_rumah" value={formData.nama_rumah} onChange={handleChange} />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="nama">No Rumah <span className="text-red-500">*</span></Label>
-              <Input id="nama" value={formData.nama} onChange={handleChange} />
+              <Label htmlFor="no_rumah">No Rumah <span className="text-red-500">*</span></Label>
+              <Input id="no_rumah" value={formData.no_rumah} onChange={handleChange} />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="nama">Alamat Rumah <span className="text-red-500">*</span></Label>
-              <Input id="nama" value={formData.nama} onChange={handleChange} />
+              <Label htmlFor="alamat_rumah">Alamat Rumah <span className="text-red-500">*</span></Label>
+              <Input id="alamat_rumah" value={formData.alamat_rumah} onChange={handleChange} />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="nama">Status Rumah <span className="text-red-500">*</span></Label>
-              <Select>
+              <Label htmlFor="status_rumah">Status Rumah <span className="text-red-500">*</span></Label>
+              <Select
+                onValueChange={(value) =>
+                  setFormData((prev) => ({ ...prev, status_rumah: value }))
+                }
+              >
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Pilih Status" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    <SelectItem value="tetap">tetap</SelectItem>
-                    <SelectItem value="kontrak">kontrak</SelectItem>
+                    <SelectItem value="Tetap">Tetap</SelectItem>
+                    <SelectItem value="Kontrak">Kontrak</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>
             </div>
-            <div className="grid gap-2">
-              <Label htmlFor="nama">Pilih Penghuni <span className="text-red-500">*</span></Label>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="flex justify-start w-full">
-                    Pilih
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-64">
-                  <Input
-                    placeholder="Cari nama..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="m-2 w-auto"
-                  />
-                  <DropdownMenuSeparator />
-                  {filteredPeople.map((person) => (
-                    <DropdownMenuCheckboxItem
-                      key={person.id}
-                      checked={selectedIds.includes(person.id)}
-                      onCheckedChange={() => handleToggle(person.id)}
-                    >
-                      {person.name}
-                    </DropdownMenuCheckboxItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
 
-
-              <div className="flex gap-2 flex-wrap">
-                {selectedPeople.map((person) => (
-                  <Badge key={person.id} className="flex items-center gap-1 pr-1">
-                    {person.name}
-                    <RiCloseFill
-                      size={18}
-                      className="cursor-pointer hover:text-red-500"
-                      onClick={() => handleRemove(person.id)}
-                    />
-                  </Badge>
-                ))}
-              </div>
-            </div>
 
           </div>
 
@@ -207,7 +153,9 @@ const TambahHome = () => {
             <DialogClose asChild>
               <Button variant="outline" type="button">Kembali</Button>
             </DialogClose>
+            <DialogClose asChild>
             <Button type="submit">Simpan</Button>
+            </DialogClose>
           </DialogFooter>
         </form>
       </DialogContent>

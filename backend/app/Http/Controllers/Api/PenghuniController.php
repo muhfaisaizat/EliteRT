@@ -22,7 +22,10 @@ class PenghuniController extends Controller
     public function index()
     {
         $penghuni = DB::table('penghuni')
-            ->leftJoin('detail_penghuni_rumah', 'penghuni.id', '=', 'detail_penghuni_rumah.id_penghuni')
+            ->leftJoin('detail_penghuni_rumah', function ($join) {
+                $join->on('penghuni.id', '=', 'detail_penghuni_rumah.id_penghuni')
+                    ->whereNull('detail_penghuni_rumah.deleted_at'); // filter soft delete
+            })
             ->leftJoin('rumah', 'detail_penghuni_rumah.id_rumah', '=', 'rumah.id')
             ->select(
                 'penghuni.id',
@@ -35,6 +38,7 @@ class PenghuniController extends Controller
                 DB::raw("COALESCE(rumah.no_rumah, '-') as no_rumah")
             )
             ->whereNull('penghuni.deleted_at')
+            ->distinct()
             ->get();
 
         return response()->json([

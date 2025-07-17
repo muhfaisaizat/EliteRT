@@ -24,25 +24,25 @@ export const columns = (handleDelete, rowSelection, setOpenEdit, setDataToEdit, 
        
 
         {
-            accessorKey: "Nama Penghuni",
+            accessorKey: "nama_lengkap",
             header: "Nama Penghuni",
             cell: ({ row }) => (
-                <div className="capitalize">{row.getValue("Nama Penghuni")}</div>
+                <div className="capitalize">{row.getValue("nama_lengkap")}</div>
             ),
         },
         
         {
-            accessorKey: "Tanggal Masuk",
+            accessorKey: "tanggal_masuk",
             header: "Tanggal Masuk",
             cell: ({ row }) => (
-                <div className="capitalize">{row.getValue("Tanggal Masuk")}</div>
+                <div className="capitalize">{row.getValue("tanggal_masuk")}</div>
             ),
         },
         {
-            accessorKey: "Tanggal Keluar",
+            accessorKey: "tanggal_keluar",
             header: "Tanggal Keluar",
             cell: ({ row }) => (
-                <div className="capitalize">{row.getValue("Tanggal Keluar")}</div>
+                <div className="capitalize">{row.getValue("tanggal_keluar")}</div>
             ),
         },
        
@@ -64,8 +64,8 @@ export const columns = (handleDelete, rowSelection, setOpenEdit, setDataToEdit, 
                         <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Aksi</DropdownMenuLabel>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem onClick={() => { setOpenEdit(true); setDataToEdit(rowData);  }}>Edit</DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => { setOpenEdit(true); setDataToEdit(rowData); }} className="text-red-500" >Hapus</DropdownMenuItem>
+                            
+                            <DropdownMenuItem onClick={() => handleDelete(rowData.id)} className="text-red-500" >Hapus</DropdownMenuItem>
 
                         </DropdownMenuContent>
                     </DropdownMenu>
