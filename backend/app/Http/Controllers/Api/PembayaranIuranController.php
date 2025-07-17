@@ -43,6 +43,54 @@ class PembayaranIuranController extends Controller
     }
 
 
+
+    /**
+     * 
+     *
+     * @OA\Get(
+     *     path="/api/pembayaran-iuran/show-rumah/{id}",
+     *     tags={"Pembayaran Iuran"},
+     *     summary="Tampilkan data pembayaran berdasarkan ID rumah",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID Rumah",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Data berhasil diambil",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string"),
+     *             @OA\Property(property="data", type="array", @OA\Items())
+     *         )
+     *     )
+     * )
+     */
+    public function showByIdRumah($id)
+    {
+        $data = DB::table('pembayaran_iuran')
+            ->whereNull('pembayaran_iuran.deleted_at')
+            ->where('pembayaran_iuran.id_rumah', $id)
+            ->join('rumah', 'rumah.id', '=', 'pembayaran_iuran.id_rumah')
+            ->join('penghuni', 'penghuni.id', '=', 'pembayaran_iuran.id_penghuni')
+            ->select(
+                'pembayaran_iuran.*',
+                'rumah.nama_rumah',
+                'rumah.no_rumah',
+                'penghuni.nama_lengkap as nama_penghuni'
+            )
+            ->get();
+
+        return response()->json([
+            'message' => 'Data pembayaran iuran berdasarkan ID rumah berhasil diambil',
+            'data' => $data
+        ]);
+    }
+
+
+
     /**
      * @OA\Get(
      *     path="/api/pembayaran-iuran/rumah",

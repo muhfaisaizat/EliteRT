@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
     getCoreRowModel,
     getFilteredRowModel,
@@ -7,7 +7,7 @@ import {
     useReactTable,
 } from "@tanstack/react-table";
 import { columns as createColumns } from "./ColumnsHistory";
-import { data as initialData } from "./data";
+// import { data as initialData } from "./data";
 import { Input } from "@/components/ui/input";
 import {
     Table,
@@ -27,21 +27,27 @@ import {
 import { ChevronDown, Edit } from "lucide-react";
 import { flexRender } from "@tanstack/react-table";
 import ViewHistory from "./View";
+import axios from 'axios';
+import { API_URL } from "../../../../../helpers/networt";
+import { useToast } from '@/hooks/use-toast';
 
 
 
 
-const PaymentHistory = () => {
+const PaymentHistory = ({dataRiwayatPembayaran}) => {
     const [sorting, setSorting] = useState([]);
     const [columnFilters, setColumnFilters] = useState([]);
     const [columnVisibility, setColumnVisibility] = useState({});
     const [rowSelection, setRowSelection] = useState({});
     const [globalFilter, setGlobalFilter] = useState("");
-    const [tableData, setTableData] = useState(initialData);
+    const [tableData, setTableData] = useState([]);
     const [openEdit, setOpenEdit] = useState(false);
     const [openView, setOpenView] = useState(false);
     const [dataToEdit, setDataToEdit] = useState(null);
     const [dataToView, setDataToView] = useState(null);
+    useEffect(() => {
+            setTableData(dataRiwayatPembayaran);
+        }, [dataRiwayatPembayaran]);
     const handleDelete = (id) => {
         setTableData((prev) => prev.filter((item) => item.id !== id));
     };

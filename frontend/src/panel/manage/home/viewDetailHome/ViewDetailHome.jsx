@@ -21,6 +21,7 @@ const ViewDetailHome = () => {
     const [showEdit, setShowEdit] = useState(false);
     const [data, setData] = useState([]);
     const [dataRiwayatPenghuni, setdataRiwayatPenghuni] = useState([]);
+    const [dataRiwayatPembayaran, setdataRiwayatPembayaran] = useState([]);
     const idRumah = localStorage.getItem("id_rumah");
     const fetchData = async () => {
         const token = localStorage.getItem("token");
@@ -30,9 +31,15 @@ const ViewDetailHome = () => {
                     Authorization: `Bearer ${token}`,
                 },
             });
+            const responsePemayaran = await axios.get(`${API_URL}/api/pembayaran-iuran/show-rumah/${idRumah}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
             // console.log(response.data.data);
             setData(response.data.data);
             setdataRiwayatPenghuni(response.data.data.riwayat_penghuni);
+            setdataRiwayatPembayaran(responsePemayaran.data.data)
 
 
         } catch (error) {
@@ -131,7 +138,7 @@ const ViewDetailHome = () => {
 
                 <div className="flex flex-col gap-4 w-full lg:w-1/2 px-8 py-3 bg-white rounded-xl">
                     <h1 className="font-semibold">Riwayat Pembayaran Iuran</h1>
-                    <PaymentHistory />
+                    <PaymentHistory dataRiwayatPembayaran={dataRiwayatPembayaran}/>
                 </div>
             </div>
 

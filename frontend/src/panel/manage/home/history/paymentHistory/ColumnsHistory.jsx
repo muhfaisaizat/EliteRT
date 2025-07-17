@@ -24,45 +24,45 @@ export const columns = (handleDelete, rowSelection, setOpenEdit, setDataToEdit, 
        
 
         {
-            accessorKey: "Nama Pembayar",
+            accessorKey: "nama_penghuni",
             header: "Nama Pembayar",
             cell: ({ row }) => (
-                <div className="capitalize">{row.getValue("Nama Penghuni")}</div>
+                <div className="capitalize">{row.getValue("nama_penghuni")}</div>
             ),
         },
         {
-            accessorKey: "Bulan",
+            accessorKey: "bulan",
             header: "Bulan",
             cell: ({ row }) => (
-                <div className="capitalize">{row.getValue("Tanggal Keluar")}</div>
+                <div className="capitalize">{row.getValue("bulan")}</div>
             ),
         },
         {
-            accessorKey: "Tahun",
+            accessorKey: "tahun",
             header: "Tahun",
             cell: ({ row }) => (
-                <div className="capitalize">{row.getValue("Tanggal Keluar")}</div>
+                <div className="capitalize">{row.getValue("tahun")}</div>
             ),
         },
         {
-            accessorKey: "Jenis Iuran",
+            accessorKey: "jenis_iuran",
             header: "Jenis Iuran",
             cell: ({ row }) => (
-                <div className="capitalize">{row.getValue("Tanggal Keluar")}</div>
+                <div className="capitalize">{row.getValue("jenis_iuran")}</div>
             ),
         },
         {
-            accessorKey: "Tagihan",
+            accessorKey: "tagihan",
             header: "Tagihan",
             cell: ({ row }) => (
-                <div className="capitalize">{row.getValue("Tanggal Keluar")}</div>
+                <div className="capitalize">{new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(row.getValue("tagihan"))}</div>
             ),
         },
         {
-            accessorKey: "Status Pembayaran",
+            accessorKey: "status_pembayaran",
             header: "Status Pembayaran",
             cell: ({ row }) => (
-                <div className="capitalize">{row.getValue("Tanggal Keluar")}</div>
+                <div className="capitalize">{row.getValue("status_pembayaran")}</div>
             ),
         },
         

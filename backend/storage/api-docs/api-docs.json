@@ -384,6 +384,47 @@
                 }
             }
         },
+        "/api/pembayaran-iuran/show-rumah/{id}": {
+            "get": {
+                "tags": [
+                    "Pembayaran Iuran"
+                ],
+                "summary": "Tampilkan data pembayaran berdasarkan ID rumah",
+                "operationId": "8d9367e779fa28b3e48652c562044f6c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID Rumah",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Data berhasil diambil",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {}
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/pembayaran-iuran/rumah": {
             "get": {
                 "tags": [

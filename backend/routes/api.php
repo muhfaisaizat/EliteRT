@@ -61,6 +61,7 @@ Route::middleware('auth:api')->group(function () {
 
     Route::prefix('pembayaran-iuran')->group(function () {
         Route::get('/', [PembayaranIuranController::class, 'index']);
+        Route::get('/show-rumah/{id}', [PembayaranIuranController::class, 'showByIdRumah']);
         Route::get('/rumah', [PembayaranIuranController::class, 'getRumah']);
         Route::get('/rumah/{id}', [PembayaranIuranController::class, 'showById']);
         Route::post('/', [PembayaranIuranController::class, 'store']);
