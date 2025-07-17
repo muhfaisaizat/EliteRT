@@ -22,8 +22,11 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
+import axios from 'axios';
+import { API_URL } from "../../../../helpers/networt";
 
-const Tambah = () => {
+
+const Tambah = ({ fetchData }) => {
     const { toast } = useToast();
 
 
@@ -43,35 +46,70 @@ const Tambah = () => {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         const { nama, status, telepon, perkawinan, foto } = formData;
 
-        if (!nama || !status || !telepon || !perkawinan || !foto) {
+        if (!nama || !telepon || !perkawinan || !foto) {
             toast({
                 variant: "destructive",
                 title: "Gagal menyimpan!",
                 description: "Semua field wajib diisi.",
             });
+            setFormData({
+                nama: "",
+                status: "",
+                telepon: "",
+                perkawinan: "",
+                foto: null,
+            }
+            )
             return;
         }
 
+        const token = localStorage.getItem("token");
+        const payload = new FormData();
 
-        toast({
-            title: "Berhasil!",
-            description: "Data penghuni berhasil ditambahkan.",
-        });
+        payload.append("nama_lengkap", nama);
+        payload.append("nomor_telepon", telepon);
+        payload.append("status_perkawinan", perkawinan);
+        payload.append("foto_ktp", foto);
 
+        try {
+            await axios.post(`${API_URL}/api/penghuni`, payload, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "multipart/form-data",
+                },
+            });
 
-        setFormData({
-            nama: "",
-            status: "",
-            telepon: "",
-            perkawinan: "",
-            foto: null,
-        });
+            toast({
+                title: "Berhasil!",
+                description: "Data penghuni berhasil ditambahkan.",
+            });
+
+            // Reset form
+            setFormData({
+                nama: "",
+                status: "",
+                telepon: "",
+                perkawinan: "",
+                foto: null,
+            });
+
+            fetchData();
+
+        } catch (error) {
+            console.error(error);
+            toast({
+                variant: "destructive",
+                title: "Gagal menyimpan!",
+                description: "Terjadi kesalahan saat mengirim data.",
+            });
+        }
     };
+
 
     return (
         <Dialog>
@@ -93,14 +131,27 @@ const Tambah = () => {
                             <Label htmlFor="nama">Nama Lengkap <span className="text-red-500">*</span></Label>
                             <Input id="nama" value={formData.nama} onChange={handleChange} />
                         </div>
-                        
+
                         <div className="grid gap-2">
                             <Label htmlFor="telepon">Nomor Telepon <span className="text-red-500">*</span></Label>
-                            <Input id="telepon" value={formData.telepon} onChange={handleChange} />
+                            <Input
+                                id="telepon"
+                                type="tel"
+                                value={formData.telepon}
+                                onChange={(e) => {
+                                    const numericValue = e.target.value.replace(/\D/g, "");
+                                    setFormData((prev) => ({
+                                        ...prev,
+                                        telepon: numericValue,
+                                    }));
+                                }}
+                            />
                         </div>
                         <div className="grid gap-2">
                             <Label htmlFor="perkawinan">Status Perkawinan <span className="text-red-500">*</span></Label>
-                             <Select>
+                            <Select value={formData.perkawinan} onValueChange={(val) =>
+                                setFormData((prev) => ({ ...prev, perkawinan: val }))
+                            }>
                                 <SelectTrigger className="w-full">
                                     <SelectValue placeholder="Pilih Status" />
                                 </SelectTrigger>
@@ -123,7 +174,9 @@ const Tambah = () => {
                         <DialogClose asChild>
                             <Button variant="outline" type="button">Kembali</Button>
                         </DialogClose>
-                        <Button type="submit">Simpan</Button>
+                        <DialogClose asChild>
+                            <Button type="submit">Simpan</Button>
+                        </DialogClose>
                     </DialogFooter>
                 </form>
             </DialogContent>

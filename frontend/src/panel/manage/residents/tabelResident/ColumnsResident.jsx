@@ -58,16 +58,23 @@ export const columns = (handleDelete, rowSelection, setOpenEdit, setDataToEdit, 
             header: "Status Penghuni",
             cell: ({ row }) => (
                 (() => {
-                    const status = row.getValue("Status Penghuni");
+                    let status = row.getValue("Status Penghuni");
+
+                    if (status === "-") {
+                        status = "Belum mendapatkan rumah";
+                    }
+
                     const statusClass =
-                        status === "tetap"
+                        status === "Tetap"
                             ? "bg-emerald-500"
-                            : status === "kontrak"
+                            : status === "Kontrak"
                                 ? "bg-yellow-500"
-                                : "bg-gray-400";
+                                : status === "Belum mendapatkan rumah"
+                                    ? "bg-gray-400"
+                                    : "bg-gray-400";
 
                     return (
-                        <div className="capitalize ">
+                        <div className="capitalize">
                             <Badge className={statusClass}>
                                 {status}
                             </Badge>
@@ -75,6 +82,7 @@ export const columns = (handleDelete, rowSelection, setOpenEdit, setDataToEdit, 
                     );
                 })()
             ),
+
         },
         {
             accessorKey: "Nomor Telepon",
@@ -110,7 +118,7 @@ export const columns = (handleDelete, rowSelection, setOpenEdit, setDataToEdit, 
 
         !isAnyRowSelected && {
             id: "actions",
-             header: "Aksi",
+            header: "Aksi",
             cell: ({ row }) => {
                 const rowData = row.original;
                 return (

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
     getCoreRowModel,
     getFilteredRowModel,
@@ -7,7 +7,7 @@ import {
     useReactTable,
 } from "@tanstack/react-table";
 import { columns as createColumns } from "./ColumnsResident";
-import { data as initialData } from "./data";
+// import { data as initialData } from "./data";
 import { Input } from "@/components/ui/input";
 import {
     Table,
@@ -28,21 +28,55 @@ import { ChevronDown, Edit } from "lucide-react";
 import { flexRender } from "@tanstack/react-table";
 import EditPenghuni from "../dialogResident/Edit";
 import ViewPenghuni from "../dialogResident/View";
+import axios from 'axios';
+import { API_URL } from "../../../../helpers/networt";
+import { useToast } from '@/hooks/use-toast';
 
 
-const TableResident = () => {
+const TableResident = ({ tableData, setTableData, fetchData }) => {
+    const { toast } = useToast();
     const [sorting, setSorting] = useState([]);
     const [columnFilters, setColumnFilters] = useState([]);
     const [columnVisibility, setColumnVisibility] = useState({});
     const [rowSelection, setRowSelection] = useState({});
     const [globalFilter, setGlobalFilter] = useState("");
-    const [tableData, setTableData] = useState(initialData);
+
     const [openEdit, setOpenEdit] = useState(false);
     const [openView, setOpenView] = useState(false);
     const [dataToEdit, setDataToEdit] = useState(null);
     const [dataToView, setDataToView] = useState(null);
-    const handleDelete = (id) => {
-        setTableData((prev) => prev.filter((item) => item.id !== id));
+
+
+
+
+    const handleDelete = async (id) => {
+        const token = localStorage.getItem("token");
+
+        try {
+            await axios.delete(`${API_URL}/api/penghuni/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            // Update data tabel
+            setTableData((prev) => prev.filter((item) => item.id !== id));
+
+            // Notifikasi sukses
+            toast({
+                title: "Berhasil!",
+                description: "Data penghuni berhasil dihapus.",
+            });
+        } catch (error) {
+            console.error("Gagal menghapus data:", error);
+
+            // Notifikasi gagal
+            toast({
+                variant: "destructive",
+                title: "Gagal menghapus!",
+                description: "Terjadi kesalahan saat menghapus data.",
+            });
+        }
     };
 
     const table = useReactTable({
@@ -143,7 +177,7 @@ const TableResident = () => {
                             ))
                         ) : (
                             <TableRow>
-                                <TableCell colSpan={columns.length} className="h-24 text-center">
+                                <TableCell colSpan={table.getAllColumns().length} className="h-24 text-center">
                                     No results.
                                 </TableCell>
                             </TableRow>
@@ -175,8 +209,8 @@ const TableResident = () => {
                     </Button>
                 </div>
             </div>
-            <EditPenghuni open={openEdit} setOpen={setOpenEdit}  data={dataToEdit} />
-            <ViewPenghuni open={openView} setOpen={setOpenView}  data={dataToView} />
+            <EditPenghuni open={openEdit} setOpen={setOpenEdit} data={dataToEdit} fetchData={fetchData} />
+            <ViewPenghuni open={openView} setOpen={setOpenView} data={dataToView} />
         </div>
     );
 };
