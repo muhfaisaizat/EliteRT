@@ -24,60 +24,62 @@ export const columns = (handleDelete, rowSelection, setOpenEdit, setDataToEdit, 
        
 
         {
-            accessorKey: "Nama Rumah",
+            accessorKey: "nama_rumah",
             header: "Nama Rumah",
             cell: ({ row }) => (
-                <div className="capitalize">{row.getValue("Nama Rumah")}</div>
+                <div className="capitalize">{row.getValue("nama_rumah")}</div>
             ),
         },
         {
-            accessorKey: "Nama Pembayar",
+            accessorKey: "nama_penghuni",
             header: "Nama Pembayar",
             cell: ({ row }) => (
-                <div className="capitalize">{row.getValue("Nama Pembayar")}</div>
+                <div className="capitalize">{row.getValue("nama_penghuni")}</div>
             ),
         },
         {
-            accessorKey: "Bulan",
+            accessorKey: "bulan",
             header: "Bulan",
             cell: ({ row }) => (
-                <div className="capitalize">{row.getValue("Bulan")}</div>
+                <div className="capitalize">{row.getValue("bulan")}</div>
             ),
         },
         {
-            accessorKey: "Tahun",
+            accessorKey: "tahun",
             header: "Tahun",
             cell: ({ row }) => (
-                <div className="capitalize">{row.getValue("Tahun")}</div>
+                <div className="capitalize">{row.getValue("tahun")}</div>
             ),
         },
         {
-            accessorKey: "Jenis Iuran",
+            accessorKey: "jenis_iuran",
             header: "Jenis Iuran",
             cell: ({ row }) => (
-                <div className="capitalize">{row.getValue("Jenis Iuran")}</div>
+                <div className="capitalize">{row.getValue("jenis_iuran")}</div>
             ),
         },
         {
-            accessorKey: "Tagihan",
+            accessorKey: "tagihan",
             header: "Tagihan",
             cell: ({ row }) => (
-                <div className="capitalize">{row.getValue("Tagihan")}</div>
+                <div className="capitalize">{new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(row.getValue("tagihan"))}</div>
             ),
         },
         {
-            accessorKey: "Status Pembayaran",
+            accessorKey: "status_pembayaran",
             header: "Status Pembayaran",
             cell: ({ row }) => (
-                <div className="capitalize">{row.getValue("Status Pembayaran")}</div>
+                <div className="capitalize">{row.getValue("status_pembayaran")}</div>
             ),
         },
         {
-            accessorKey: "Tanggal",
+            accessorKey: "created_at",
             header: "Tanggal",
-            cell: ({ row }) => (
-                <div className="capitalize">{row.getValue("Tanggal")}</div>
-            ),
+            cell: ({ row }) => {
+                const fullDate = row.getValue("created_at");
+                const dateOnly = fullDate ? fullDate.substring(0, 10) : "-";
+                return <div className="capitalize">{dateOnly}</div>;
+            },
         },
         
         
@@ -102,7 +104,7 @@ export const columns = (handleDelete, rowSelection, setOpenEdit, setDataToEdit, 
                             <DropdownMenuSeparator />
                             <DropdownMenuItem onClick={() => { setOpenView(true); setDataToView(rowData); }}>Lihat Detail</DropdownMenuItem>
                             <DropdownMenuItem onClick={() => { setOpenEdit(true); setDataToEdit(rowData); }} >Edit Penghuni</DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => { setOpenEdit(true); setDataToEdit(rowData); }} className="text-red-500" >Hapus</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleDelete(rowData.id)} className="text-red-500" >Hapus</DropdownMenuItem>
 
                         </DropdownMenuContent>
                     </DropdownMenu>

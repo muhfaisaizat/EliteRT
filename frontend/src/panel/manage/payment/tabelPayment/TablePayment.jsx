@@ -7,7 +7,7 @@ import {
     useReactTable,
 } from "@tanstack/react-table";
 import { columns as createColumns } from "./ColumnsPayment";
-import { data as initialData } from "./data";
+// import { data as initialData } from "./data";
 import { Input } from "@/components/ui/input";
 import {
     Table,
@@ -28,21 +28,51 @@ import { ChevronDown, Edit } from "lucide-react";
 import { flexRender } from "@tanstack/react-table";
 import EditPenghuni from "../dialogPayment/Edit";
 import ViewPenghuni from "../dialogPayment/View";
+import axios from 'axios';
+import { API_URL } from "../../../../helpers/networt";
+import { useToast } from '@/hooks/use-toast';
 
 
-const TablePayment = () => {
+const TablePayment = ({tableData, setTableData, fetchData}) => {
+    const { toast } = useToast();
     const [sorting, setSorting] = useState([]);
     const [columnFilters, setColumnFilters] = useState([]);
     const [columnVisibility, setColumnVisibility] = useState({});
     const [rowSelection, setRowSelection] = useState({});
     const [globalFilter, setGlobalFilter] = useState("");
-    const [tableData, setTableData] = useState(initialData);
+    
     const [openEdit, setOpenEdit] = useState(false);
     const [openView, setOpenView] = useState(false);
     const [dataToEdit, setDataToEdit] = useState(null);
     const [dataToView, setDataToView] = useState(null);
-    const handleDelete = (id) => {
-        setTableData((prev) => prev.filter((item) => item.id !== id));
+    const handleDelete = async (id) => {
+        const token = localStorage.getItem("token");
+
+        try {
+            await axios.delete(`${API_URL}/api/pembayaran-iuran/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+           
+            setTableData((prev) => prev.filter((item) => item.id !== id));
+
+            
+            toast({
+                title: "Berhasil!",
+                description: "Data  berhasil dihapus.",
+            });
+        } catch (error) {
+            console.error("Gagal menghapus data:", error);
+
+            
+            toast({
+                variant: "destructive",
+                title: "Gagal menghapus!",
+                description: "Terjadi kesalahan saat menghapus data.",
+            });
+        }
     };
 
     const table = useReactTable({
@@ -143,7 +173,7 @@ const TablePayment = () => {
                             ))
                         ) : (
                             <TableRow>
-                                <TableCell colSpan={columns.length} className="h-24 text-center">
+                                <TableCell colSpan={table.getAllColumns().length} className="h-24 text-center">
                                     No results.
                                 </TableCell>
                             </TableRow>
@@ -175,7 +205,7 @@ const TablePayment = () => {
                     </Button>
                 </div>
             </div>
-            <EditPenghuni open={openEdit} setOpen={setOpenEdit}  data={dataToEdit} />
+            <EditPenghuni openDialog={openEdit} setOpenDialog={setOpenEdit}  data={dataToEdit} fetchData={fetchData}/>
             <ViewPenghuni open={openView} setOpen={setOpenView}  data={dataToView} />
         </div>
     );

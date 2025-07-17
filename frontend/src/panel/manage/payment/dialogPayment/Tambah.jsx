@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
@@ -39,35 +39,82 @@ import {
 } from "@/components/ui/popover"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Textarea } from "@/components/ui/textarea"
+import axios from 'axios';
+import { API_URL } from "../../../../helpers/networt";
 
-const frameworks = [
-    {
-        value: "next.js",
-        label: "Next.js",
-    },
-    {
-        value: "sveltekit",
-        label: "SvelteKit",
-    },
-    {
-        value: "nuxt.js",
-        label: "Nuxt.js",
-    },
-    {
-        value: "remix",
-        label: "Remix",
-    },
-    {
-        value: "astro",
-        label: "Astro",
-    },
-]
 
-const Tambah = () => {
+
+const Tambah = ({ fetchData }) => {
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState("");
+    const [open1, setOpen1] = useState(false);
+    const [value1, setValue1] = useState("");
+    const [rumahList, setRumahList] = useState([]);
+    const [pembayarList, setPembayarList] = useState([]);
     const { toast } = useToast();
     const [lainnyaChecked, setLainnyaChecked] = useState(false);
+
+
+    const fetchDataRumah = async () => {
+        try {
+            const token = localStorage.getItem("token");
+            const res = await axios.get(`${API_URL}/api/pembayaran-iuran/rumah`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+            });
+
+            const data = res.data.data.map((item) => ({
+                value: String(item.id),
+                label: item.nama_rumah,
+            }));
+
+            setRumahList(data);
+        } catch (err) {
+            console.error("Gagal mengambil data rumah:", err);
+        }
+    };
+
+    useEffect(() => {
+        fetchDataRumah();
+    }, []);
+
+    useEffect(() => {
+        if (!value) return;
+
+        const fetchPenghuni = async () => {
+            try {
+                const token = localStorage.getItem("token");
+                const res = await axios.get(`${API_URL}/api/pembayaran-iuran/rumah/${value}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                });
+
+                const data = res.data.data.map((item) => ({
+                    value: String(item.id),
+                    label: item.nama_lengkap,
+                }));
+
+                setPembayarList(data);
+            } catch (err) {
+                // console.error("Gagal mengambil data penghuni:", err);
+                setPembayarList([]);
+            }
+        };
+
+        fetchPenghuni();
+    }, [value]);
+
+
+    const formatRupiah = (value) => {
+
+        const numberString = value.replace(/[^\d]/g, "");
+
+        return numberString.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    };
 
 
     const [formData, setFormData] = useState({
@@ -78,47 +125,76 @@ const Tambah = () => {
         jenisIuran: "",
         tagihan: "",
         statusPembayaran: "",
+        metodePembayaran: "",
+        keterangan: "",
     });
 
 
 
     const handleChange = (e) => {
         const { id, value } = e.target;
-        setFormData((prev) => ({
-            ...prev,
-            [id]: value,
-        }));
+        if (id === "tagihan") {
+
+            const formatted = formatRupiah(value);
+            setFormData((prev) => ({
+                ...prev,
+                [id]: formatted,
+            }));
+        } else {
+            setFormData((prev) => ({
+                ...prev,
+                [id]: value,
+            }));
+        }
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const { namaRumah, namaPembayar, bulan, tahun, jenisIuran, tagihan, statusPembayaran } = formData;
+        try {
+            const token = localStorage.getItem("token");
 
-        if (!namaRumah || !namaPembayar || !bulan || !tahun || !jenisIuran || !tagihan || !statusPembayaran) {
-            toast({
-                variant: "destructive",
-                title: "Gagal menyimpan!",
-                description: "Semua field wajib diisi.",
+            console.log(formData.statusPembayaran)
+
+            const payload = {
+                id_rumah: Number(value),
+                id_penghuni: Number(value1),
+                bulan: formData.bulan,
+                tahun: Number(formData.tahun),
+                jenis_iuran: formData.jenisIuran,
+                tagihan: Number(formData.tagihan.replace(/\./g, "")),
+                status_pembayaran: formData.statusPembayaran,
+                metode_pembayaran: formData.metodePembayaran,
+                keterangan: formData.keterangan,
+            };
+
+            await axios.post(`${API_URL}/api/pembayaran-iuran`, payload, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
             });
-            return;
+
+            toast({ title: "Berhasil", description: "Data iuran berhasil ditambahkan." });
+            setOpen(false);
+            fetchData();
+            setFormData({
+                namaRumah: "",
+                namaPembayar: "",
+                bulan: "",
+                tahun: "",
+                jenisIuran: "",
+                tagihan: "",
+                statusPembayaran: "",
+                metodePembayaran: "",
+                keterangan: "",
+            });
+        } catch (error) {
+            console.error("Gagal tambah data:", error);
+            toast({ title: "Gagal", description: "Data gagal ditambahkan.", variant: "destructive" });
         }
-
-        toast({
-            title: "Berhasil!",
-            description: "Data iuran berhasil ditambahkan.",
-        });
-
-        setFormData({
-            namaRumah: "",
-            namaPembayar: "",
-            bulan: "",
-            tahun: "",
-            jenisIuran: "",
-            tagihan: "",
-            statusPembayaran: "",
-        });
     };
+
 
     return (
         <Dialog>
@@ -126,7 +202,7 @@ const Tambah = () => {
                 <Button>Tambah</Button>
             </DialogTrigger>
 
-            <DialogContent className="sm:max-w-[500px]">
+            <DialogContent className="sm:max-w-[500px] py-14">
                 <form onSubmit={handleSubmit}>
                     <DialogHeader>
                         <DialogTitle>Tambah Pembayaran</DialogTitle>
@@ -137,7 +213,9 @@ const Tambah = () => {
 
                     <div className="grid gap-4 py-4">
                         <div className="grid gap-2">
-                            <Label htmlFor="namaRumah">Nama Rumah <span className="text-red-500">*</span></Label>
+                            <Label htmlFor="namaRumah">
+                                Nama Rumah <span className="text-red-500">*</span>
+                            </Label>
                             <Popover open={open} onOpenChange={setOpen}>
                                 <PopoverTrigger asChild>
                                     <Button
@@ -147,31 +225,31 @@ const Tambah = () => {
                                         className="w-full justify-between"
                                     >
                                         {value
-                                            ? frameworks.find((framework) => framework.value === value)?.label
-                                            : "Select framework..."}
-                                        <ChevronsUpDown className="opacity-50" />
+                                            ? rumahList.find((r) => r.value === value)?.label
+                                            : "Pilih rumah..."}
+                                        <ChevronsUpDown className="opacity-50 h-4 w-4" />
                                     </Button>
                                 </PopoverTrigger>
                                 <PopoverContent className="w-full p-0">
                                     <Command>
-                                        <CommandInput placeholder="Search framework..." className="h-9" />
+                                        <CommandInput placeholder="Cari rumah..." className="h-9" />
                                         <CommandList>
-                                            <CommandEmpty>No framework found.</CommandEmpty>
+                                            <CommandEmpty>Rumah tidak ditemukan.</CommandEmpty>
                                             <CommandGroup>
-                                                {frameworks.map((framework) => (
+                                                {rumahList.map((rumah) => (
                                                     <CommandItem
-                                                        key={framework.value}
-                                                        value={framework.value}
+                                                        key={rumah.value}
+                                                        value={rumah.value}
                                                         onSelect={(currentValue) => {
-                                                            setValue(currentValue === value ? "" : currentValue)
-                                                            setOpen(false)
+                                                            setValue(currentValue === value ? "" : currentValue);
+                                                            setOpen(false);
                                                         }}
                                                     >
-                                                        {framework.label}
+                                                        {rumah.label}
                                                         <Check
                                                             className={cn(
                                                                 "ml-auto",
-                                                                value === framework.value ? "opacity-100" : "opacity-0"
+                                                                value === rumah.value ? "opacity-100" : "opacity-0"
                                                             )}
                                                         />
                                                     </CommandItem>
@@ -184,41 +262,43 @@ const Tambah = () => {
                         </div>
 
                         <div className="grid gap-2">
-                            <Label htmlFor="namaPembayar">Nama Pembayar <span className="text-red-500">*</span></Label>
-                            <Popover open={open} onOpenChange={setOpen}>
+                            <Label htmlFor="namaPembayar">
+                                Nama Pembayar <span className="text-red-500">*</span>
+                            </Label>
+                            <Popover open={open1} onOpenChange={setOpen1}>
                                 <PopoverTrigger asChild>
                                     <Button
                                         variant="outline"
                                         role="combobox"
-                                        aria-expanded={open}
+                                        aria-expanded={open1}
                                         className="w-full justify-between"
                                     >
-                                        {value
-                                            ? frameworks.find((framework) => framework.value === value)?.label
-                                            : "Select framework..."}
+                                        {value1
+                                            ? pembayarList.find((item) => item.value === value1)?.label
+                                            : "Pilih nama pembayar..."}
                                         <ChevronsUpDown className="opacity-50" />
                                     </Button>
                                 </PopoverTrigger>
                                 <PopoverContent className="w-full p-0">
                                     <Command>
-                                        <CommandInput placeholder="Search framework..." className="h-9" />
+                                        <CommandInput placeholder="Cari nama..." className="h-9" />
                                         <CommandList>
-                                            <CommandEmpty>No framework found.</CommandEmpty>
+                                            <CommandEmpty>Data tidak ditemukan.</CommandEmpty>
                                             <CommandGroup>
-                                                {frameworks.map((framework) => (
+                                                {pembayarList.map((item) => (
                                                     <CommandItem
-                                                        key={framework.value}
-                                                        value={framework.value}
+                                                        key={item.value}
+                                                        value={item.value}
                                                         onSelect={(currentValue) => {
-                                                            setValue(currentValue === value ? "" : currentValue)
-                                                            setOpen(false)
+                                                            setValue1(currentValue === value1 ? "" : currentValue);
+                                                            setOpen1(false);
                                                         }}
                                                     >
-                                                        {framework.label}
+                                                        {item.label}
                                                         <Check
                                                             className={cn(
                                                                 "ml-auto",
-                                                                value === framework.value ? "opacity-100" : "opacity-0"
+                                                                value1 === item.value ? "opacity-100" : "opacity-0"
                                                             )}
                                                         />
                                                     </CommandItem>
@@ -243,9 +323,17 @@ const Tambah = () => {
                         <div className="grid gap-2">
                             <Label htmlFor="jenisIuran">Jenis Iuran <span className="text-red-500">*</span></Label>
                             {lainnyaChecked ? (
-                                <Input id="jenisIuran" value={formData.jenisIuran} onChange={handleChange} />
+                                <Input id="jenisIuran" value={formData.jenisIuran} onChange={handleChange} required />
                             ) : (
-                                <Select >
+                                <Select
+                                    value={formData.jenisIuran}
+                                    onValueChange={(value) =>
+                                        setFormData((prev) => ({
+                                            ...prev,
+                                            jenisIuran: value,
+                                        }))
+                                    }
+                                >
                                     <SelectTrigger className="w-full">
                                         <SelectValue placeholder="Pilih Iuran" />
                                     </SelectTrigger>
@@ -278,21 +366,21 @@ const Tambah = () => {
 
                         <div className="grid gap-2">
                             <Label htmlFor="statusPembayaran">Status Pembayaran <span className="text-red-500">*</span></Label>
-                            <Select onValueChange={(value) => setFormData({ ...formData, statusPembayaran: value })}>
+                            <Select value={formData.statusPembayaran} onValueChange={(value) => setFormData({ ...formData, statusPembayaran: value })}>
                                 <SelectTrigger className="w-full">
                                     <SelectValue placeholder="Pilih status" />
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectGroup>
-                                        <SelectItem value="Lunas">Lunas</SelectItem>
-                                        <SelectItem value="Belum Lunas">Belum Lunas</SelectItem>
+                                        <SelectItem value="lunas">Lunas</SelectItem>
+                                        <SelectItem value="belum bayar">Belum Lunas</SelectItem>
                                     </SelectGroup>
                                 </SelectContent>
                             </Select>
                         </div>
                         <div className="grid gap-2">
-                            <Label htmlFor="statusPembayaran">Pembayaran Lewat<span className="text-red-500">*</span></Label>
-                            <Select onValueChange={(value) => setFormData({ ...formData, statusPembayaran: value })}>
+                            <Label htmlFor="statusPembayaran">Metode Pembayaran<span className="text-red-500">*</span></Label>
+                            <Select value={formData.metodePembayaran} onValueChange={(value) => setFormData({ ...formData, metodePembayaran: value })}>
                                 <SelectTrigger className="w-full">
                                     <SelectValue placeholder="Pilih status" />
                                 </SelectTrigger>
@@ -306,7 +394,7 @@ const Tambah = () => {
                         </div>
                         <div className="grid gap-2">
                             <Label htmlFor="statusPembayaran">Keterangan</Label>
-                             <Textarea placeholder="Tulis disini...." />
+                            <Textarea id="keterangan" placeholder="Tulis disini...." value={formData.keterangan} onChange={handleChange} />
                         </div>
                     </div>
 
@@ -314,7 +402,9 @@ const Tambah = () => {
                         <DialogClose asChild>
                             <Button variant="outline" type="button">Kembali</Button>
                         </DialogClose>
-                        <Button type="submit">Simpan</Button>
+                        <DialogClose asChild>
+                            <Button type="submit">Simpan</Button>
+                        </DialogClose>
                     </DialogFooter>
                 </form>
             </DialogContent>

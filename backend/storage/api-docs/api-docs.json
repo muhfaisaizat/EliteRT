@@ -251,6 +251,10 @@
                                         "type": "integer",
                                         "example": 2025
                                     },
+                                    "jenis_iuran": {
+                                        "type": "string",
+                                        "example": "Satpam"
+                                    },
                                     "tagihan": {
                                         "type": "number",
                                         "format": "float",
@@ -374,6 +378,10 @@
                                     "tahun": {
                                         "type": "integer",
                                         "example": 2025
+                                    },
+                                    "jenis_iuran": {
+                                        "type": "string",
+                                        "example": "Satpam"
                                     },
                                     "tagihan": {
                                         "type": "number",

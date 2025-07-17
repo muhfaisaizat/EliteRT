@@ -42,7 +42,7 @@ export const columns = (handleDelete, rowSelection, setOpenEdit, setDataToEdit, 
             accessorKey: "jumlah_pengeluaran",
             header: "Jumlah pengeluaran",
             cell: ({ row }) => (
-                <div className="capitalize">{row.getValue("jumlah_pengeluaran")}</div>
+                <div className="capitalize">{new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(row.getValue("jumlah_pengeluaran"))}</div>
             ),
         },
         {

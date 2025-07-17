@@ -17,6 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_penghuni');
             $table->string('bulan', 20); 
             $table->year('tahun');
+            $table->string('jenis_iuran'); 
             $table->float('tagihan'); 
             $table->enum('status_pembayaran', ['belum bayar', 'lunas'])->default('belum bayar');
             $table->string('metode_pembayaran')->nullable(); 
