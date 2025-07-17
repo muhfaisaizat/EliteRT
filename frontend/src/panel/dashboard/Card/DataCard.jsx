@@ -72,7 +72,7 @@ const DataCard = ({ dataCard }) => {
                             <p className='text-[24px] font-semibold'>
                                 {data.jumlah_belum_bayar ?? 0}
                             </p>
-                            <div className='flex items-center gap-4 hover:cursor-pointer' onClick={() => navigate("/pembayaran")}>
+                            <div className='flex items-center gap-4 hover:cursor-pointer' onClick={() => navigate("/panel/pembayaran")}>
                                 <p className='text-[12px] font-medium'>
                                     Cek Sekarang
                                 </p>
