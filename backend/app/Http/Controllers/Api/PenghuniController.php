@@ -21,7 +21,21 @@ class PenghuniController extends Controller
      */
     public function index()
     {
-        $penghuni = DB::table('penghuni')->whereNull('deleted_at')->get();
+        $penghuni = DB::table('penghuni')
+            ->leftJoin('detail_penghuni_rumah', 'penghuni.id', '=', 'detail_penghuni_rumah.id_penghuni')
+            ->leftJoin('rumah', 'detail_penghuni_rumah.id_rumah', '=', 'rumah.id')
+            ->select(
+                'penghuni.id',
+                'penghuni.nama_lengkap',
+                'penghuni.nomor_telepon',
+                'penghuni.status_perkawinan',
+                'penghuni.foto_ktp',
+                DB::raw("COALESCE(rumah.status_rumah, '-') as status_tempat_tinggal"),
+                DB::raw("COALESCE(rumah.nama_rumah, '-') as nama_rumah"),
+                DB::raw("COALESCE(rumah.no_rumah, '-') as no_rumah")
+            )
+            ->whereNull('penghuni.deleted_at')
+            ->get();
 
         return response()->json([
             'message' => 'Berhasil mengambil data penghuni',

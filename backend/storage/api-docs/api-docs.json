@@ -136,9 +136,6 @@
                 "responses": {
                     "200": {
                         "description": "Berhasil mengambil data"
-                    },
-                    "500": {
-                        "description": "Unauthorized"
                     }
                 }
             },
