@@ -35,7 +35,7 @@ const DataCard = ({ dataCard }) => {
                     <div className='border-2 bg-white rounded-[8px] grid gap-[8px] p-[24px] h-full'>
                         <div className='flex justify-between'>
                             <h1 className='text-[14px] font-semibold'>Total Pengeluaran</h1>
-                            <FaBagShopping size="16" color="#717179" />
+                            <HiMiniPresentationChartLine size="16" color="#717179" />
                         </div>
                         <div className='grid gap-[4px]'>
                             <p className='text-[24px] font-semibold'>
