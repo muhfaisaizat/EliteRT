@@ -18,7 +18,7 @@ Repositori ini adalah aplikasi berbasis web untuk sistem administrasi RT yang te
 
 ## Prasyarat  
 Pastikan kamu telah menginstal:
-- [PHP 8.1+](https://www.php.net/) (Laravel 10 membutuhkan minimal PHP 8.1)
+- [PHP 8.3+](https://www.php.net/) (Laravel 10 membutuhkan PHP 8.3.10)
 - [Composer](https://getcomposer.org/)
 - [Node.js v20.12.2](https://nodejs.org/)
 - [MySQL](https://www.mysql.com/)
