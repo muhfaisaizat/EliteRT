@@ -59,7 +59,7 @@ Pastikan kamu telah menginstal:
    DB_USERNAME=root
    DB_PASSWORD=  # sesuaikan dengan password MySQL kamu
    
-8. Buat database baru di phpMyAdmin atau MySQL dengan nama:
+8. Jalankan Laragon atau Mysql dan Buat database baru di phpMyAdmin atau MySQL dengan nama:
    ```bash
    elitert
    
