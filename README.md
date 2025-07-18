@@ -18,7 +18,7 @@ Repositori ini adalah aplikasi berbasis web untuk sistem administrasi RT yang te
 
 ## Prasyarat  
 Pastikan kamu telah menginstal:
-- [PHP 8.3+](https://www.php.net/) (Laravel 10 membutuhkan PHP 8.3.10)
+- [PHP 8.3+](https://www.php.net/) (Laravel 10 disarankan menggunakan PHP 8.3.23)
 - [Composer](https://getcomposer.org/)
 - [Node.js v20.12.2](https://nodejs.org/)
 - [MySQL](https://www.mysql.com/)
@@ -27,7 +27,15 @@ Pastikan kamu telah menginstal:
 ---
 
 ## Panduan Instalasi & Menjalankan Aplikasi  
+> 🛠️ **Catatan**: Gunakan versi PHP 8.3.23 dan Jika kamu menggunakan **Laragon** sebagai local server, pastikan mengikuti langkah-langkah di bawah ini.
 
+### 📁 Menaruh Folder Project di Laragon
+
+1. Buka folder instalasi Laragon (biasanya: `C:\laragon`).
+2. Masuk ke dalam folder `www`.
+3. Pindahkan atau salin folder project kamu ke dalam folder `www`, misalnya:`C:\laragon\www\elitert`
+4. Setelah itu, kamu bisa setup project
+   
 ### 🔧 Backend (Laravel 10 + MySQL)
 
 1. Masuk ke folder backend:
