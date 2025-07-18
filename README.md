@@ -110,6 +110,11 @@ Pastikan kamu telah menginstal:
    ```bash
    http://localhost:5173
 
+> ✅ Setelah kamu selesai melakukan setup **Backend** dan **Frontend**, jalankan aplikasi dengan urutan berikut:
+> 1. Jalankan **backend** terlebih dahulu menggunakan `php artisan serve`.
+> 2. Lalu jalankan **frontend** dengan `npm run dev` atau `yarn dev`.
+> 
+> Setiap kali ingin membuka aplikasi, pastikan backend berjalan terlebih dahulu, baru kemudian frontend-nya.
 
 ### 🔐 Akun Login Dummy
 ```bash
